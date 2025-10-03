@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -59,30 +60,31 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Vancouver Virtual Productions",
+    description: "A website for showcasing virtual production services and work",
+    url: "https://vvp.com",
+    logo: "https://vvp.com/apple-touch-icon.png",
+    sameAs: [],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+    },
+  };
+
   return (
     <html lang="en">
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "Vancouver Virtual Productions",
-              description: "A website for showcasing virtual production services and work",
-              url: "https://vvp.com",
-              logo: "https://vvp.com/apple-touch-icon.png",
-              sameAs: [],
-              contactPoint: {
-                "@type": "ContactPoint",
-                contactType: "customer service",
-              },
-            }),
-          }}
-        />
-      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
+        <Script
+          id="structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData),
+          }}
+        />
       </body>
     </html>
   );

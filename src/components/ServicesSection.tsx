@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import tokens from '../../design/tokens.json';
 
 const services = [
@@ -16,6 +17,16 @@ const services = [
 
 export default function ServicesSection() {
   const router = useRouter();
+
+  const handleServiceClick = (slug: string) => {
+    // Kill all ScrollTriggers before navigation to prevent DOM conflicts
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    
+    // Small delay to let GSAP cleanup complete
+    setTimeout(() => {
+      router.push(`/services/${slug}`);
+    }, 50);
+  };
 
   return (
     <div style={{
@@ -102,7 +113,7 @@ export default function ServicesSection() {
               return (
                 <div
                   key={service.name}
-                  onClick={() => router.push(`/services/${service.slug}`)}
+                  onClick={() => handleServiceClick(service.slug)}
                   style={{
                     width: '330px',
                     height: '230px',

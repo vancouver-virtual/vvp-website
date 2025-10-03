@@ -6,9 +6,14 @@ import tokens from '../../design/tokens.json';
 export default function BackButton() {
   const router = useRouter();
 
+  const handleBack = () => {
+    // Navigate back - let the home page initialize its own ScrollTriggers
+    router.push('/');
+  };
+
   return (
     <button
-      onClick={() => router.push('/')}
+      onClick={handleBack}
       style={{
         background: 'transparent',
         border: `1px solid ${tokens.colors.glass.border}`,
