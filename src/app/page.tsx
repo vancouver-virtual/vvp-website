@@ -1,41 +1,67 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import tokens from '../../design/tokens.json';
+
+const services = [
+  'Commercial',
+  'Cinema',
+  'Sports',
+  'Podcasting',
+  'Live Event Space',
+  'Product Reveal Stage',
+  'Music Videos',
+  'Immersive Experiences'
+];
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sectionsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const sections = sectionsRef.current;
+    const container = containerRef.current;
+
+    if (!sections || !container) return;
+
+    // Get the total width we need to scroll
+    const getScrollWidth = () => {
+      return sections.scrollWidth - window.innerWidth;
+    };
+
+    // Create horizontal scroll animation
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container,
+        start: 'top top',
+        end: () => `+=${getScrollWidth()}`,
+        scrub: 1,
+        pin: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    tl.to(sections, {
+      x: () => -getScrollWidth(),
+      ease: 'none',
+    });
+
+    return () => {
+      tl.kill();
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100vw',
-      height: '100vh',
-      overflow: 'hidden',
-    }}>
-      {/* Background Video */}
-      <iframe
-        src="https://player.vimeo.com/video/391516939?background=1&autoplay=1&loop=1&byline=0&title=0"
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '100vw',
-          height: '56.25vw', // 16:9 aspect ratio
-          minHeight: '100vh',
-          minWidth: '177.78vh', // 16:9 aspect ratio
-          border: 'none',
-          zIndex: tokens.z.videoBg,
-        }}
-        allow="autoplay; fullscreen"
-        title="Background Video"
-      />
-
-      {/* Right Menu Bar */}
+    <>
+      {/* Right Menu Bar - Fixed position outside the scrolling container */}
       <div style={{
         position: 'absolute',
         top: `${tokens.spacing.xl}px`,
@@ -170,7 +196,7 @@ export default function Home() {
                 flexDirection: 'column',
                 gap: `${tokens.spacing.sm}px`,
               }}>
-                {['Services', 'About Us', 'Tour the Facility', 'Meet the Team'].map((item) => (
+                {['Services', 'Our Vision', 'Tour the Facility', 'Meet the Team'].map((item) => (
                   <button
                     key={item}
                     style={{
@@ -293,6 +319,67 @@ export default function Home() {
           +
         </button>
       </div>
+        </div>
+
+        {/* Services Page */}
+        <div style={{
+          position: 'relative',
+          width: 'calc(100vw + 1px)',
+          height: '100vh',
+          flexShrink: 0,
+          scrollSnapAlign: 'start',
+          background: tokens.colors.bg.base,
+          padding: `${tokens.spacing['3xl']}px`,
+        }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateRows: 'repeat(2, 1fr)',
+              gridAutoFlow: 'column',
+              gridAutoColumns: '400px',
+              gap: `${tokens.spacing.xl}px`,
+              height: '100%',
+              overflowX: 'auto',
+              overflowY: 'hidden',
+            }}
+          >
+            {services.map((service) => (
+              <div
+                key={service}
+                style={{
+                  background: tokens.colors.glass.bg,
+                  backdropFilter: `blur(${tokens.blur.glass}px) saturate(140%)`,
+                  border: `1px solid ${tokens.colors.glass.border}`,
+                  borderRadius: `${tokens.radii.lg}px`,
+                  padding: `${tokens.spacing.xl}px`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: tokens.colors.on.bg,
+                  fontSize: '24px',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: tokens.typography.letterSpacing.nav,
+                  transition: `all ${tokens.motion.dur.base}ms ${tokens.motion.ease.emphasis}`,
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = '0.85';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = '1';
+                }}
+              >
+                {service}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
+
+    {/* Spacer to create scroll space for ScrollTrigger */}
+    <div style={{ height: `${1762}px` }} />
+    </>
   );
 }
