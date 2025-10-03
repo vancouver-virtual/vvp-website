@@ -1,59 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vancouver Virtual Productions (VVP)
 
-## Design System
-
-**⚠️ IMPORTANT:** This project enforces a strict design system. All UI code must use tokens from `/design/tokens.json`.
-
-- **Design tokens:** [/design/tokens.json](design/tokens.json)
-- **Component specs:** [/design/components/](design/components/)
-- **Audit report:** [/audit/report.md](audit/report.md)
-- **Claude Code rules:** [/.claude/instructions.md](.claude/instructions.md)
-
-### Quick Rules
-- ✅ Use token references (e.g., `tokens.colors.on.bg`)
-- ✅ 1px letter-spacing on ALL uppercase text
-- ✅ Opacity/color hover effects (NOT underlines)
-- ✅ Motion timing from `motion.dur.*` tokens
-- ❌ No hard-coded colors, spacing, or timing
-- ❌ No underline hover effects
-- ❌ No arbitrary z-index values
-
-### Validation
-```bash
-npx tsx scripts/verify-design-audit.ts
-```
+A minimal, production-ready Next.js (App Router) site for showcasing virtual production services and work. This project is configured for static export and ready for deployment to Firebase Hosting.
 
 ## Getting Started
 
-First, run the development server:
+### Development
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build and Static Export
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Build the project and generate static files:
 
-## Learn More
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+This will create an `out/` directory with the static export ready for deployment.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Preview Static Export
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To preview the static export locally:
 
-## Deploy on Vercel
+```bash
+npm run start
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This serves the `out/` directory on [http://localhost:3000](http://localhost:3000).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+- **App Router**: Uses Next.js 15 App Router with TypeScript
+- **Static Export**: Configured with `output: 'export'` for static hosting
+- **SEO Ready**: Includes metadata, robots.txt, sitemap.xml, and JSON-LD
+- **Accessible**: Proper landmarks, keyboard navigation, and color contrast
+- **Responsive**: Mobile-first design with CSS custom properties
+
+## Next Steps for Firebase Hosting
+
+1. **Initialize Firebase**: Run `firebase init hosting` in the project root
+2. **Configure Public Directory**: Set `public: out` when prompted
+3. **Deploy**: Use `firebase deploy` to publish your site
+4. **Custom Domain**: Configure your custom domain in Firebase Console
+5. **Environment Variables**: Add any required environment variables to Firebase Functions if needed
+
+## Technology Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Styling**: CSS with custom properties (no external CSS framework)
+- **Fonts**: Geist Sans and Geist Mono via Google Fonts
+- **Deployment**: Static export ready for Firebase Hosting

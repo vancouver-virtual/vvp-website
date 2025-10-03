@@ -82,19 +82,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <div id="root">
-          <header role="banner">
-            <nav role="navigation" aria-label="Main navigation">
-              {/* Navigation will be added later */}
-            </nav>
-          </header>
-          <main role="main">
-            {children}
-          </main>
-          <footer role="contentinfo">
-            <p>&copy; {new Date().getFullYear()} Vancouver Virtual Productions. All rights reserved.</p>
-          </footer>
-        </div>
+        {children}
       </body>
     </html>
   );
