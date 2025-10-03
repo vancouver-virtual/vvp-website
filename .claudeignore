@@ -1,0 +1,34 @@
+# Claude Code Ignore
+# Files and directories that Claude Code should not analyze or modify
+
+# Dependencies
+node_modules/
+.next/
+out/
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Audit artifacts (read-only reference)
+# Allow reading but prevent accidental modification
+# audit/*.png
+
+# Build outputs
+*.min.js
+*.map
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

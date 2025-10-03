@@ -29,16 +29,17 @@
   },
   "variants": {
     "VideoPrimary": {
-      "description": "Uppercase, bold, link-like CTA with optional underline on hover and right icon",
+      "description": "Uppercase, bold, link-like CTA with subtle opacity shift on hover and right icon",
       "styles": {
         "textTransform": "uppercase",
         "fontWeight": 800,
+        "letterSpacing": "typography.letterSpacing.nav",
         "textDecoration": "none",
         "color": "colors.on.bg",
         "padding": "spacing.sm spacing.md",
         "borderRadius": "radii.pill",
         "transition": "all motion.dur.base motion.ease.emphasis",
-        "textDecorationHover": "underline",
+        "opacityHover": 0.85,
         "iconSize": "icon.size.md"
       }
     },
@@ -61,6 +62,7 @@
     "Ghost": {
       "description": "Pill-shaped button with transparent background and subtle hover effects",
       "styles": {
+        "letterSpacing": "typography.letterSpacing.nav",
         "padding": "spacing.sm spacing.md",
         "borderRadius": "radii.pill",
         "backgroundColor": "transparent",

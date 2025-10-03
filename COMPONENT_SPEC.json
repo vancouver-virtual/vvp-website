@@ -1,0 +1,89 @@
+{
+    "VideoPlayer": {
+      "role": "background hero video + escalated fullscreen with audio",
+      "props": {
+        "src": "string",
+        "poster": "string|null",
+        "initialMuted": true,
+        "loop": true,
+        "playsInline": true
+      },
+      "states": [
+        "MutedInlineLoop",
+        "FSWithSound",
+        "InlineMenuOpen"
+      ],
+      "a11y": {
+        "aria-label": "Hero video background",
+        "no essential content": true
+      }
+    },
+    "Button": {
+      "variants": {
+        "VideoPrimary": {
+          "style": "linklike-cta",
+          "textTransform": "uppercase",
+          "fontWeight": 800,
+          "underlineOnHover": true,
+          "iconRight": "play"
+        },
+        "IconGhost": {
+          "shape": "circle",
+          "bg": "transparent",
+          "border": "1px solid colors.glass/border",
+          "hoverBg": "colors.glass/highlight"
+        }
+      },
+      "sizes": {
+        "md": { "px": 16, "py": 12, "radius": "pill" }
+      },
+      "a11y": { "focusRing": "2px colors.focus/ring" }
+    },
+    "CloseChip": {
+      "role": "persistent close in fullscreen",
+      "style": {
+        "bg": "colors.glass/bg",
+        "border": "1px solid colors.glass/border",
+        "backdropFilter": "blur(blur.glass) saturate(120%)",
+        "radius": "pill",
+        "padding": "spacing.sm spacing.md",
+        "elevation": "elevation.1"
+      },
+      "content": "×  Close",
+      "a11y": { "aria-label": "Close video and return" }
+    },
+    "MenuPanel": {
+      "placement": "right",
+      "width": "menu.width",
+      "headerHeight": "menu.headerHeight",
+      "glass": {
+        "background": "colors.glass/bg",
+        "border": "1px solid colors.glass/border",
+        "backdropFilter": "blur(blur.glass) saturate(140%)",
+        "shadow": "elevation.2"
+      },
+      "openMotion": {
+        "from": { "x": 32, "opacity": 0.0 },
+        "to": { "x": 0, "opacity": 1.0 },
+        "duration": "motion.dur.base",
+        "easing": "motion.ease.emphasis"
+      },
+      "content": {
+        "sections": [
+          { "type": "list", "title": "Explore", "items": ["Approach", "Team", "Investor Relations"] },
+          { "type": "divider" },
+          { "type": "list", "title": "Contact", "items": ["Email", "Call"] }
+        ]
+      },
+      "a11y": {
+        "role": "dialog",
+        "aria-modal": true,
+        "focusTrap": true,
+        "aria-label": "Site menu"
+      }
+    },
+    "MenuToggle": {
+      "icon": "hamburger",
+      "a11y": { "aria-controls": "menu-panel", "aria-expanded": "boolean" }
+    }
+  }

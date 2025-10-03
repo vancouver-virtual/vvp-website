@@ -1,5 +1,28 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Design System
+
+**⚠️ IMPORTANT:** This project enforces a strict design system. All UI code must use tokens from `/design/tokens.json`.
+
+- **Design tokens:** [/design/tokens.json](design/tokens.json)
+- **Component specs:** [/design/components/](design/components/)
+- **Audit report:** [/audit/report.md](audit/report.md)
+- **Claude Code rules:** [/.claude/instructions.md](.claude/instructions.md)
+
+### Quick Rules
+- ✅ Use token references (e.g., `tokens.colors.on.bg`)
+- ✅ 1px letter-spacing on ALL uppercase text
+- ✅ Opacity/color hover effects (NOT underlines)
+- ✅ Motion timing from `motion.dur.*` tokens
+- ❌ No hard-coded colors, spacing, or timing
+- ❌ No underline hover effects
+- ❌ No arbitrary z-index values
+
+### Validation
+```bash
+npx tsx scripts/verify-design-audit.ts
+```
+
 ## Getting Started
 
 First, run the development server:

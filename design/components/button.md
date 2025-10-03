@@ -22,8 +22,8 @@ The Button component provides interactive elements with multiple visual variants
 
 ### VideoPrimary
 **When to use**: Primary call-to-action buttons, especially for video playback
-- Uppercase text with bold weight (800)
-- Link-like appearance with optional underline on hover
+- Uppercase text with bold weight (800) and 1px letter-spacing for readability
+- Link-like appearance with subtle opacity shift on hover (0.85)
 - Supports right-aligned icons (e.g., play button)
 - **Do**: Use for main actions like "Play with sound"
 - **Don't**: Use for secondary actions or destructive operations
@@ -48,7 +48,7 @@ The Button component provides interactive elements with multiple visual variants
 | State | Visual Changes | Behavior |
 |-------|----------------|----------|
 | Default | Base styling applied | Ready for interaction |
-| Hover | Background highlight, underline (VideoPrimary) | Cursor changes to pointer |
+| Hover | Background highlight, opacity shift (VideoPrimary) | Cursor changes to pointer |
 | Active | Slightly darker background | Visual feedback on click |
 | Focus | Focus ring appears | Keyboard navigation indicator |
 | Disabled | Reduced opacity, no interactions | All events disabled |

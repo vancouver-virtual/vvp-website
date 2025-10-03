@@ -40,6 +40,11 @@ The Menu component is a right-docked glassmorphism panel that slides in from the
 | Open | Panel fully visible | Focus trapped, scroll locked |
 | Closing | Slides out to right | Focus returns, scroll unlocks |
 
+### Menu Item Interactions
+- Menu item links use **opacity shift or color change** on hover (no underline)
+- Uppercase navigation items use **1px letter-spacing** for improved readability
+- Hover transitions use `motion.dur.base` (200ms) with smooth easing
+
 ## Accessibility
 - **Role**: `dialog` with `aria-modal="true"`
 - **ARIA**: `aria-label="Site menu"` for screen readers
