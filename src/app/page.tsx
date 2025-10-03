@@ -5,17 +5,8 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import tokens from '../../design/tokens.json';
-
-const services = [
-  'Commercial',
-  'Cinema',
-  'Sports',
-  'Podcasting',
-  'Live Event Space',
-  'Product Reveal Stage',
-  'Music Videos',
-  'Immersive Experiences'
-];
+import LandingSection from '@/components/LandingSection';
+import ServicesSection from '@/components/ServicesSection';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,6 +26,8 @@ export default function Home() {
       return sections.scrollWidth - window.innerWidth;
     };
 
+    let currentSection = '';
+
     // Create horizontal scroll animation
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -45,6 +38,24 @@ export default function Home() {
         pin: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          // Update URL hash based on scroll progress
+          const progress = self.progress;
+          let newSection = '';
+
+          if (progress < 0.5) {
+            newSection = '';
+          } else {
+            newSection = 'services';
+          }
+
+          // Only update if section changed
+          if (newSection !== currentSection) {
+            currentSection = newSection;
+            const newUrl = newSection ? `/#${newSection}` : '/';
+            window.history.replaceState(null, '', newUrl);
+          }
+        },
       },
     });
 
@@ -338,88 +349,8 @@ export default function Home() {
             willChange: 'transform',
           }}
         >
-        {/* Landing Page */}
-        <div style={{
-          position: 'relative',
-          width: 'calc(100vw + 1px)',
-          height: '100vh',
-          flexShrink: 0,
-          scrollSnapAlign: 'start',
-        }}>
-          {/* Background Video */}
-          <iframe
-            src="https://player.vimeo.com/video/391516939?background=1&autoplay=1&loop=1&byline=0&title=0"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '100vw',
-              height: '56.25vw',
-              minHeight: '100vh',
-              minWidth: '177.78vh',
-              border: 'none',
-              zIndex: tokens.z.videoBg,
-            }}
-            allow="autoplay; fullscreen"
-            title="Background Video"
-          />
-        </div>
-
-        {/* Services Page */}
-        <div style={{
-          position: 'relative',
-          width: 'calc(100vw + 1px)',
-          height: '100vh',
-          flexShrink: 0,
-          scrollSnapAlign: 'start',
-          background: tokens.colors.bg.base,
-          padding: `${tokens.spacing['3xl']}px`,
-        }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateRows: 'repeat(2, 1fr)',
-              gridAutoFlow: 'column',
-              gridAutoColumns: '400px',
-              gap: `${tokens.spacing.xl}px`,
-              height: '100%',
-              overflowX: 'auto',
-              overflowY: 'hidden',
-            }}
-          >
-            {services.map((service) => (
-              <div
-                key={service}
-                style={{
-                  background: tokens.colors.glass.bg,
-                  backdropFilter: `blur(${tokens.blur.glass}px) saturate(140%)`,
-                  border: `1px solid ${tokens.colors.glass.border}`,
-                  borderRadius: `${tokens.radii.lg}px`,
-                  padding: `${tokens.spacing.xl}px`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: tokens.colors.on.bg,
-                  fontSize: '24px',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: tokens.typography.letterSpacing.nav,
-                  transition: `all ${tokens.motion.dur.base}ms ${tokens.motion.ease.emphasis}`,
-                  cursor: 'pointer',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.opacity = '0.85';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.opacity = '1';
-                }}
-              >
-                {service}
-              </div>
-            ))}
-          </div>
-        </div>
+          <LandingSection />
+          <ServicesSection />
       </div>
       </div>
 
