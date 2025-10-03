@@ -170,7 +170,7 @@ export default function Home() {
                 flexDirection: 'column',
                 gap: `${tokens.spacing.sm}px`,
               }}>
-                {['Video', 'About', 'Vision', 'Team'].map((item) => (
+                {['Services', 'About Us', 'Tour the Facility', 'Meet the Team'].map((item) => (
                   <button
                     key={item}
                     style={{
@@ -219,7 +219,7 @@ export default function Home() {
                 display: 'flex',
                 gap: `${tokens.spacing.sm}px`,
               }}>
-                {['Email', 'Call', 'Maps'].map((item) => (
+                {['Email', 'Call', 'Locations'].map((item) => (
                   <button
                     key={item}
                     style={{
