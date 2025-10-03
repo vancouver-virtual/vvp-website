@@ -1,0 +1,81 @@
+{
+  "component": "Menu",
+  "version": "1.0.0",
+  "description": "Right-docked glassmorphism panel with navigation items and focus management",
+  "tokens": "References to /design/tokens.json using dot paths",
+  "props": {
+    "isOpen": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the menu panel is open"
+    },
+    "width": {
+      "type": "number",
+      "default": "menu.width",
+      "description": "Width of the menu panel in pixels"
+    },
+    "headerHeight": {
+      "type": "number",
+      "default": "menu.headerHeight",
+      "description": "Height of the menu header in pixels"
+    },
+    "items": {
+      "type": "array",
+      "default": [],
+      "description": "Array of menu items with label, href, and section properties"
+    }
+  },
+  "variants": {
+    "default": {
+      "description": "Standard glassmorphism panel with backdrop blur and glass styling",
+      "styles": {
+        "position": "fixed",
+        "top": 0,
+        "right": 0,
+        "height": "100vh",
+        "width": "menu.width",
+        "backgroundColor": "colors.glass.bg",
+        "borderLeft": "1px solid colors.glass.border",
+        "backdropFilter": "blur(blur.glass) saturate(140%)",
+        "boxShadow": "elevation.e2",
+        "zIndex": "z.menu",
+        "transform": "translateX(32px)",
+        "opacity": 0,
+        "transition": "all motion.dur.base motion.ease.emphasis"
+      }
+    }
+  },
+  "states": ["Closed", "Opening", "Open", "Closing"],
+  "a11y": {
+    "role": "dialog",
+    "aria": {
+      "modal": true,
+      "label": "Site menu"
+    },
+    "focus": {
+      "trap": true,
+      "returnFocus": true
+    }
+  },
+  "behavior": {
+    "events": ["OPEN_MENU", "CLOSE_MENU", "ESC_KEY", "PLAY_WITH_SOUND"],
+    "reductions": "Menu slides in from right (+32px offset) when opening. Focus trap prevents tab navigation outside menu. Body scroll is locked when open. ESC key closes menu and returns focus to toggle. If PLAY_WITH_SOUND occurs while menu is open, menu closes first then video escalates to fullscreen."
+  },
+  "analytics": {
+    "events": ["menu_open", "menu_close", "menu_item_click"]
+  },
+  "examples": [
+    {
+      "name": "Basic Menu",
+      "jsx": "<Menu isOpen={true} items={menuItems} />"
+    },
+    {
+      "name": "Menu Toggle",
+      "jsx": "<Button variant='Ghost' onClick={() => setMenuOpen(!menuOpen)}>Menu</Button>"
+    }
+  ],
+  "tests": {
+    "unit": ["renders", "applies glassmorphism styles", "focus trap active"],
+    "e2e": ["keyboard navigation", "esc closes menu", "focus management", "scroll lock"]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "component": "VideoPlayer",
+  "version": "1.0.0",
+  "description": "Background hero video with fullscreen escalation and audio controls",
+  "tokens": "References to /design/tokens.json using dot paths",
+  "props": {
+    "src": {
+      "type": "string",
+      "default": null,
+      "description": "Video source URL"
+    },
+    "poster": {
+      "type": "string",
+      "default": null,
+      "description": "Poster image URL for video thumbnail"
+    },
+    "loop": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether video should loop"
+    },
+    "playsInline": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether video plays inline on mobile"
+    },
+    "initialMuted": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether video starts muted"
+    }
+  },
+  "variants": {
+    "default": {
+      "description": "Background hero video with fullscreen escalation capability",
+      "styles": {
+        "position": "absolute",
+        "top": 0,
+        "left": 0,
+        "width": "100%",
+        "height": "100%",
+        "objectFit": "cover",
+        "zIndex": "z.videoBg",
+        "backgroundColor": "colors.bg.base"
+      }
+    }
+  },
+  "states": ["MutedInlineLoop", "FSWithSound", "InlineMenuOpen"],
+  "a11y": {
+    "role": "presentation",
+    "aria": {
+      "hidden": true,
+      "label": "Hero video background"
+    },
+    "focus": {
+      "decorative": true
+    }
+  },
+  "behavior": {
+    "events": ["PLAY_WITH_SOUND", "CLOSE_FS", "ESC_KEY", "OPEN_MENU", "CLOSE_MENU"],
+    "reductions": "Video starts in MutedInlineLoop state (autoplay, muted, loop, inline). PLAY_WITH_SOUND transitions to FSWithSound (unmute + fullscreen). CLOSE_FS or ESC_KEY returns to MutedInlineLoop (exit fullscreen + mute). OPEN_MENU transitions to InlineMenuOpen (menu open, video continues muted). If PLAY_WITH_SOUND occurs in InlineMenuOpen, menu closes first then escalates to fullscreen."
+  },
+  "analytics": {
+    "events": ["video_play_with_sound", "video_close_fs", "video_fullscreen_enter", "video_fullscreen_exit"]
+  },
+  "examples": [
+    {
+      "name": "Basic Video Player",
+      "jsx": "<VideoPlayer src='/hero-video.mp4' poster='/hero-poster.jpg' />"
+    },
+    {
+      "name": "With Close Chip",
+      "jsx": "<VideoPlayer src='/hero-video.mp4'><CloseChip onClose={handleClose} /></VideoPlayer>"
+    }
+  ],
+  "tests": {
+    "unit": ["renders", "applies video attributes", "state transitions"],
+    "e2e": ["fullscreen behavior", "audio controls", "mobile inline play", "cross-feature integration"]
+  }
+}

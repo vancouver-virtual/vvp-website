@@ -1,0 +1,17 @@
+{
+  "name": "Vancouver Virtual Productions",
+  "short_name": "VVP",
+  "description": "A website for showcasing virtual production services and work",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#2563eb",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/"
+}

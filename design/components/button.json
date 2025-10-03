@@ -1,0 +1,113 @@
+{
+  "component": "Button",
+  "version": "1.0.0",
+  "description": "Interactive button component with multiple variants for different use cases",
+  "tokens": "References to /design/tokens.json using dot paths",
+  "props": {
+    "variant": {
+      "type": "enum",
+      "default": "VideoPrimary",
+      "description": "Visual style variant",
+      "options": ["VideoPrimary", "IconGhost", "Ghost"]
+    },
+    "size": {
+      "type": "enum",
+      "default": "md",
+      "description": "Button size",
+      "options": ["md"]
+    },
+    "iconRight": {
+      "type": "string",
+      "default": null,
+      "description": "Icon name to display on the right side"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the button is disabled"
+    }
+  },
+  "variants": {
+    "VideoPrimary": {
+      "description": "Uppercase, bold, link-like CTA with optional underline on hover and right icon",
+      "styles": {
+        "textTransform": "uppercase",
+        "fontWeight": 800,
+        "textDecoration": "none",
+        "color": "colors.on.bg",
+        "padding": "spacing.sm spacing.md",
+        "borderRadius": "radii.pill",
+        "transition": "all motion.dur.base motion.ease.emphasis",
+        "textDecorationHover": "underline",
+        "iconSize": "icon.size.md"
+      }
+    },
+    "IconGhost": {
+      "description": "Circular, transparent background with glass border for icon-only actions",
+      "styles": {
+        "width": 44,
+        "height": 44,
+        "borderRadius": "radii.pill",
+        "backgroundColor": "transparent",
+        "border": "1px solid colors.glass.border",
+        "color": "colors.on.bg",
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "transition": "all motion.dur.base motion.ease.emphasis",
+        "hoverBackgroundColor": "colors.glass.highlight"
+      }
+    },
+    "Ghost": {
+      "description": "Pill-shaped button with transparent background and subtle hover effects",
+      "styles": {
+        "padding": "spacing.sm spacing.md",
+        "borderRadius": "radii.pill",
+        "backgroundColor": "transparent",
+        "border": "1px solid colors.divider.subtle",
+        "color": "colors.on.bg",
+        "transition": "all motion.dur.base motion.ease.standard",
+        "hoverBackgroundColor": "colors.glass.highlight"
+      }
+    }
+  },
+  "states": ["default", "hover", "active", "focus", "disabled"],
+  "a11y": {
+    "role": "button",
+    "aria": {
+      "disabled": "boolean"
+    },
+    "focus": {
+      "ring": "colors.focus.ring",
+      "minTarget": {
+        "w": 44,
+        "h": 44
+      }
+    }
+  },
+  "behavior": {
+    "events": ["CLICK", "HOVER", "FOCUS", "BLUR", "ESC_KEY", "PLAY_WITH_SOUND", "OPEN_MENU"],
+    "reductions": "Button responds to click events, shows hover states, and can trigger video playback or menu opening. Focus ring appears on keyboard navigation. Disabled state prevents all interactions."
+  },
+  "analytics": {
+    "events": ["button_click", "video_play_with_sound", "menu_open"]
+  },
+  "examples": [
+    {
+      "name": "VideoPrimary",
+      "jsx": "<Button variant='VideoPrimary' iconRight='play'>Play with sound</Button>"
+    },
+    {
+      "name": "IconGhost",
+      "jsx": "<Button variant='IconGhost' iconRight='close' aria-label='Close' />"
+    },
+    {
+      "name": "Ghost",
+      "jsx": "<Button variant='Ghost'>Menu</Button>"
+    }
+  ],
+  "tests": {
+    "unit": ["renders", "applies variants", "focus ring present", "disabled state"],
+    "e2e": ["keyboard nav", "click events", "hover states", "accessibility compliance"]
+  }
+}
