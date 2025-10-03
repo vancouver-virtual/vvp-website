@@ -21,10 +21,8 @@ export default function Home() {
 
     if (!sections || !container) return;
 
-    // Get the total width we need to scroll
-    const getScrollWidth = () => {
-      return sections.scrollWidth - window.innerWidth;
-    };
+    // Scroll only from Landing to Services (100vw)
+    const scrollWidth = window.innerWidth;
 
     let currentSection = '';
 
@@ -33,7 +31,7 @@ export default function Home() {
       scrollTrigger: {
         trigger: container,
         start: 'top top',
-        end: () => `+=${getScrollWidth()}`,
+        end: () => `+=${scrollWidth}`,
         scrub: 1,
         pin: true,
         anticipatePin: 1,
@@ -60,7 +58,7 @@ export default function Home() {
     });
 
     tl.to(sections, {
-      x: () => -getScrollWidth(),
+      x: () => -scrollWidth,
       ease: 'none',
     });
 
@@ -351,11 +349,9 @@ export default function Home() {
         >
           <LandingSection />
           <ServicesSection />
-      </div>
+        </div>
       </div>
 
-      {/* Spacer to create scroll space for ScrollTrigger */}
-      <div style={{ height: `${1762}px` }} />
     </>
   );
 }
