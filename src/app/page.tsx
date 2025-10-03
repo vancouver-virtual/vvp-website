@@ -61,25 +61,34 @@ export default function Home() {
 
   return (
     <>
-      {/* Right Menu Bar - Fixed position outside the scrolling container */}
-      <div style={{
-        position: 'absolute',
-        top: `${tokens.spacing.xl}px`,
-        right: `${tokens.spacing.xl}px`,
-        bottom: `${tokens.spacing.xl}px`,
-        width: isMenuOpen ? '480px' : '90px',
-        background: tokens.colors.glass.bg,
-        backdropFilter: `blur(${tokens.blur.glass}px) saturate(140%)`,
-        border: `1px solid ${tokens.colors.glass.border}`,
-        borderRadius: `${tokens.radii.md}px`,
-        boxShadow: tokens.elevation.e2,
-        zIndex: tokens.z.menu,
-        display: 'flex',
-        flexDirection: 'column',
-        padding: `${tokens.spacing.lg}px`,
-        transition: `width ${tokens.motion.dur.slow}ms ${tokens.motion.ease.emphasis}`,
-        overflow: 'hidden',
-      }}>
+      <div
+        ref={containerRef}
+        style={{
+          overflow: 'hidden',
+          height: '100vh',
+          width: '100vw',
+          position: 'relative',
+        }}
+      >
+        {/* Right Menu Bar - Absolute position so it scrolls with content */}
+        <div style={{
+          position: 'absolute',
+          top: `${tokens.spacing.xl}px`,
+          right: `${tokens.spacing.xl}px`,
+          bottom: `${tokens.spacing.xl}px`,
+          width: isMenuOpen ? '480px' : '90px',
+          background: tokens.colors.glass.bg,
+          backdropFilter: `blur(${tokens.blur.glass}px) saturate(140%)`,
+          border: `1px solid ${tokens.colors.glass.border}`,
+          borderRadius: `${tokens.radii.md}px`,
+          boxShadow: tokens.elevation.e2,
+          zIndex: tokens.z.menu,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: `${tokens.spacing.lg}px`,
+          transition: `width ${tokens.motion.dur.slow}ms ${tokens.motion.ease.emphasis}`,
+          overflow: 'hidden',
+        }}>
         {/* Logo and Header */}
         <div style={{
           marginBottom: isMenuOpen ? `${tokens.spacing.lg}px` : `${tokens.spacing.xl}px`,
@@ -319,6 +328,42 @@ export default function Home() {
           +
         </button>
       </div>
+
+        <div
+          ref={sectionsRef}
+          style={{
+            display: 'flex',
+            width: '200vw',
+            height: '100vh',
+            willChange: 'transform',
+          }}
+        >
+        {/* Landing Page */}
+        <div style={{
+          position: 'relative',
+          width: 'calc(100vw + 1px)',
+          height: '100vh',
+          flexShrink: 0,
+          scrollSnapAlign: 'start',
+        }}>
+          {/* Background Video */}
+          <iframe
+            src="https://player.vimeo.com/video/391516939?background=1&autoplay=1&loop=1&byline=0&title=0"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '100vw',
+              height: '56.25vw',
+              minHeight: '100vh',
+              minWidth: '177.78vh',
+              border: 'none',
+              zIndex: tokens.z.videoBg,
+            }}
+            allow="autoplay; fullscreen"
+            title="Background Video"
+          />
         </div>
 
         {/* Services Page */}
@@ -376,10 +421,10 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
 
-    {/* Spacer to create scroll space for ScrollTrigger */}
-    <div style={{ height: `${1762}px` }} />
+      {/* Spacer to create scroll space for ScrollTrigger */}
+      <div style={{ height: `${1762}px` }} />
     </>
   );
 }
