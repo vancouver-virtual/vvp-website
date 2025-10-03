@@ -112,6 +112,34 @@ export default function Home() {
           )}
         </div>
 
+        {/* Centered text for collapsed state */}
+        {!isMenuOpen && (
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <div style={{
+              writingMode: 'vertical-rl',
+              textOrientation: 'mixed',
+              transform: 'rotate(360deg)',
+              fontSize: '11px',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: tokens.typography.letterSpacing.nav,
+              color: tokens.colors.on.bg,
+              textAlign: 'center',
+              lineHeight: '1.2',
+            }}>
+              Vancouver Virtual
+            </div>
+          </div>
+        )}
+
         {/* Spacer to push button to bottom */}
         <div style={{ flex: 1 }} />
 
