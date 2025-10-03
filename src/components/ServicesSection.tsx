@@ -102,7 +102,7 @@ export default function ServicesSection() {
             gridTemplateRows: 'repeat(2, 230px)',
             gridAutoFlow: 'column',
             gridAutoColumns: '330px',
-            gap: `${tokens.spacing.xl}px`,
+            gap: `${tokens.spacing['2xl']}px`,
             alignContent: 'center',
             paddingRight: `${tokens.spacing['3xl']}px`,
           }}>
@@ -118,7 +118,7 @@ export default function ServicesSection() {
                     width: '330px',
                     height: '230px',
                     background: '#2C2E33',
-                    borderRadius: `${tokens.radii.lg}px`,
+                    borderRadius: `${tokens.radii.sm}px`,
                     padding: `${tokens.spacing.xl}px`,
                     display: 'flex',
                     flexDirection: 'column',
@@ -128,7 +128,7 @@ export default function ServicesSection() {
                     color: tokens.colors.on.bg,
                     transition: `all ${tokens.motion.dur.base}ms ${tokens.motion.ease.emphasis}`,
                     cursor: 'pointer',
-                    marginTop: isBottomRow ? `${tokens.spacing.xl}px` : 0,
+                    marginLeft: isBottomRow ? '50px' : '0px',
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-4px)';
