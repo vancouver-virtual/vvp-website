@@ -1,0 +1,133 @@
+{
+  "component": "HorizontalScroll",
+  "version": "1.0.0",
+  "description": "Full-page horizontal scroll container with snap points and wheel-to-horizontal conversion",
+  "tokens": "References to /design/tokens.json using dot paths",
+  "props": {
+    "children": {
+      "type": "ReactNode",
+      "required": true,
+      "description": "Page components to render in horizontal layout"
+    },
+    "enableWheelHijack": {
+      "type": "boolean",
+      "default": true,
+      "description": "Convert vertical mouse wheel to horizontal scroll"
+    },
+    "enableKeyboardNav": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable arrow key navigation between pages"
+    },
+    "threshold": {
+      "type": "number",
+      "default": "scroll.threshold",
+      "description": "Minimum wheel delta to trigger page change (pixels)"
+    },
+    "onPageChange": {
+      "type": "function",
+      "default": null,
+      "description": "Callback fired when active page changes"
+    }
+  },
+  "variants": {
+    "default": {
+      "description": "Standard horizontal scroll with snap points and smooth scrolling",
+      "styles": {
+        "position": "relative",
+        "overflowX": "scroll",
+        "overflowY": "hidden",
+        "scrollSnapType": "scroll.snap.type",
+        "scrollBehavior": "scroll.behavior",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": "page.width",
+        "height": "page.height",
+        "scrollbarWidth": "none",
+        "msOverflowStyle": "none",
+        "WebkitOverflowScrolling": "touch"
+      }
+    }
+  },
+  "states": ["Idle", "Scrolling", "Snapping"],
+  "childComponent": {
+    "name": "Page",
+    "description": "Wrapper for individual pages within the horizontal scroll",
+    "styles": {
+      "scrollSnapAlign": "scroll.snap.align",
+      "scrollSnapStop": "scroll.snap.stop",
+      "minWidth": "page.width",
+      "width": "page.width",
+      "height": "page.height",
+      "flexShrink": 0,
+      "position": "relative"
+    }
+  },
+  "a11y": {
+    "role": "region",
+    "aria": {
+      "label": "Horizontal scroll pages",
+      "live": "polite"
+    },
+    "keyboard": {
+      "ArrowRight": "Next page",
+      "ArrowLeft": "Previous page",
+      "Home": "First page",
+      "End": "Last page"
+    },
+    "focus": {
+      "management": "Focus returns to page after scroll",
+      "indicator": "Current page index announced to screen readers"
+    }
+  },
+  "behavior": {
+    "events": ["WHEEL", "SCROLL", "KEYDOWN", "TOUCH_SWIPE"],
+    "reductions": "Vertical mouse wheel events are converted to horizontal scroll. Each scroll action snaps to the nearest page boundary. Arrow keys navigate between pages. Smooth scrolling uses motion.dur.base (200ms) and motion.ease.emphasis. Respects prefers-reduced-motion by using instant scroll. Focus trap integration: closes menu before scrolling."
+  },
+  "performance": {
+    "optimizations": [
+      "GPU acceleration via translateZ(0)",
+      "will-change: transform during scroll only",
+      "Lazy render pages outside viewport +/- 1",
+      "Debounced wheel events (100ms)",
+      "RequestAnimationFrame for smooth updates"
+    ]
+  },
+  "integration": {
+    "menu": "Menu closes automatically on page change",
+    "video": "Video pauses when scrolling away from video page",
+    "routing": "URL updates to reflect current page (optional)",
+    "deepLinking": "Supports initial scroll to specific page via URL hash"
+  },
+  "examples": [
+    {
+      "name": "Basic Horizontal Scroll",
+      "jsx": "<HorizontalScroll>\n  <Page>Hero content</Page>\n  <Page>Team member 1</Page>\n  <Page>Team member 2</Page>\n  <Page>Contact</Page>\n</HorizontalScroll>"
+    },
+    {
+      "name": "With Page Change Callback",
+      "jsx": "<HorizontalScroll onPageChange={(index) => console.log('Page', index)}>\n  <Page>Content</Page>\n</HorizontalScroll>"
+    },
+    {
+      "name": "Disable Wheel Hijack",
+      "jsx": "<HorizontalScroll enableWheelHijack={false}>\n  <Page>Use native scroll only</Page>\n</HorizontalScroll>"
+    }
+  ],
+  "tests": {
+    "unit": [
+      "renders children in horizontal layout",
+      "applies scroll-snap styles",
+      "hides scrollbar",
+      "calculates page count correctly"
+    ],
+    "e2e": [
+      "wheel events scroll horizontally",
+      "snaps to page boundaries",
+      "keyboard navigation works",
+      "touch swipe works on mobile",
+      "respects prefers-reduced-motion",
+      "menu closes on page change",
+      "video pauses on scroll away"
+    ]
+  }
+}

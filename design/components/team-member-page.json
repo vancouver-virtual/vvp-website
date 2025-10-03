@@ -1,0 +1,161 @@
+{
+  "component": "TeamMemberPage",
+  "version": "1.0.0",
+  "description": "Full-page team member card with image and bio, designed for horizontal scroll layout",
+  "tokens": "References to /design/tokens.json using dot paths",
+  "props": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "description": "Team member name"
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Role or position title"
+    },
+    "bio": {
+      "type": "string",
+      "default": null,
+      "description": "Optional biography or description"
+    },
+    "imageUrl": {
+      "type": "string",
+      "default": null,
+      "description": "Team member photo URL"
+    },
+    "imagePosition": {
+      "type": "enum",
+      "options": ["left", "right"],
+      "default": "left",
+      "description": "Position of image relative to content"
+    }
+  },
+  "variants": {
+    "default": {
+      "description": "Standard team member page with side-by-side image and content",
+      "layout": {
+        "container": {
+          "display": "flex",
+          "flexDirection": "row",
+          "alignItems": "center",
+          "justifyContent": "center",
+          "gap": "spacing.2xl",
+          "padding": "spacing.3xl",
+          "maxWidth": "page.maxWidth",
+          "margin": "0 auto",
+          "height": "100%"
+        },
+        "image": {
+          "flex": "0 0 400px",
+          "height": "500px",
+          "borderRadius": "radii.lg",
+          "overflow": "hidden",
+          "backgroundColor": "colors.glass.bg"
+        },
+        "content": {
+          "flex": "1",
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": "spacing.md"
+        }
+      },
+      "typography": {
+        "name": {
+          "fontSize": "typography.size.displayLarge",
+          "fontWeight": "typography.weight.bold",
+          "letterSpacing": "typography.letterSpacing.wide",
+          "textTransform": "uppercase",
+          "color": "colors.on.bg",
+          "lineHeight": 1.2
+        },
+        "title": {
+          "fontSize": "typography.size.body",
+          "fontWeight": "typography.weight.light",
+          "letterSpacing": "typography.letterSpacing.tight",
+          "color": "colors.on.bgSecondary",
+          "lineHeight": 1.4
+        },
+        "bio": {
+          "fontSize": "typography.size.small",
+          "fontWeight": "typography.weight.regular",
+          "color": "colors.on.bgSecondary",
+          "lineHeight": 1.6,
+          "marginTop": "spacing.lg"
+        }
+      }
+    },
+    "compact": {
+      "description": "Smaller layout for mobile or reduced space",
+      "layout": {
+        "container": {
+          "flexDirection": "column",
+          "gap": "spacing.xl",
+          "padding": "spacing.xl"
+        },
+        "image": {
+          "flex": "0 0 300px",
+          "height": "300px",
+          "borderRadius": "radii.md"
+        }
+      }
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "mobile": {
+        "maxWidth": 768,
+        "variant": "compact"
+      },
+      "desktop": {
+        "minWidth": 769,
+        "variant": "default"
+      }
+    }
+  },
+  "states": ["default", "hover", "focus"],
+  "a11y": {
+    "semantics": {
+      "container": "article",
+      "name": "h2",
+      "title": "p",
+      "bio": "p"
+    },
+    "aria": {
+      "label": "Team member: {name}"
+    }
+  },
+  "behavior": {
+    "events": [],
+    "reductions": "Static display component. Image uses object-fit: cover for consistent sizing. Supports optional bio text. Layout adapts to viewport size."
+  },
+  "examples": [
+    {
+      "name": "Basic Team Member",
+      "jsx": "<TeamMemberPage\n  name=\"John Doe\"\n  title=\"Chief Technology Officer\"\n  imageUrl=\"/team/john.jpg\"\n/>"
+    },
+    {
+      "name": "With Biography",
+      "jsx": "<TeamMemberPage\n  name=\"Jane Smith\"\n  title=\"Co-Founder\"\n  bio=\"Jane has over 15 years of experience in venture capital...\"\n  imageUrl=\"/team/jane.jpg\"\n/>"
+    },
+    {
+      "name": "Image on Right",
+      "jsx": "<TeamMemberPage\n  name=\"Alex Johnson\"\n  title=\"Head of Design\"\n  imageUrl=\"/team/alex.jpg\"\n  imagePosition=\"right\"\n/>"
+    }
+  ],
+  "tests": {
+    "unit": [
+      "renders name and title",
+      "renders optional bio when provided",
+      "renders image when imageUrl provided",
+      "applies correct typography styles",
+      "respects imagePosition prop"
+    ],
+    "visual": [
+      "image aspect ratio maintained",
+      "text alignment correct",
+      "spacing matches design tokens",
+      "responsive layout works"
+    ]
+  }
+}

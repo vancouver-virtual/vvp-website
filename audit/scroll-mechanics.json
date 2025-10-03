@@ -1,0 +1,16 @@
+{
+  "scrollDirection": "both",
+  "scrollSnapType": "none",
+  "scrollBehavior": "auto",
+  "overflowX": "hidden",
+  "overflowY": "hidden",
+  "scrollPaddingInline": "auto",
+  "scrollSnapAlign": "none",
+  "containerWidth": "1440px",
+  "containerHeight": "900px",
+  "pageWidth": "1440px",
+  "pageCount": 1,
+  "transitionDuration": "0s",
+  "transitionTimingFunction": "ease",
+  "transformProperty": "none"
+}

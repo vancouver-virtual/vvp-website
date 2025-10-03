@@ -1,0 +1,75 @@
+{
+  "containerSelector": "freeze",
+  "layoutType": "flex",
+  "columns": 1,
+  "gap": "normal",
+  "itemWidth": "7103.19px",
+  "itemHeight": "900px",
+  "padding": "0px",
+  "alignment": "normal",
+  "teamMembers": [
+    {
+      "name": "Diverse.Open-Minded.Resourceful.Informed.Aligned.",
+      "title": "Team",
+      "imageUrl": null,
+      "layout": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "normal",
+        "gap": "normal"
+      }
+    },
+    {
+      "name": "CullenThompson",
+      "title": "Co-FounderChief Investment Officer",
+      "imageUrl": null,
+      "layout": {
+        "display": "block",
+        "flexDirection": "row",
+        "alignItems": "normal",
+        "gap": "normal"
+      }
+    },
+    {
+      "name": "CullenThompson",
+      "title": "Co-FounderChief Investment Officer",
+      "imageUrl": null,
+      "layout": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "gap": "normal"
+      }
+    },
+    {
+      "name": "RalphReynolds",
+      "title": "Co-FounderChairman",
+      "imageUrl": null,
+      "layout": {
+        "display": "block",
+        "flexDirection": "row",
+        "alignItems": "normal",
+        "gap": "normal"
+      }
+    },
+    {
+      "name": "RalphReynolds",
+      "title": "Co-FounderChairman",
+      "imageUrl": null,
+      "layout": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "gap": "normal"
+      }
+    }
+  ],
+  "typography": {
+    "nameFont": "termina, sans-serif",
+    "nameSize": "28px",
+    "nameWeight": "700",
+    "titleFont": "\"Benton Sans Bk\"",
+    "titleSize": "16px",
+    "titleWeight": "300"
+  }
+}
