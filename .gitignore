@@ -39,3 +39,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Large media files (consider using Git LFS)
+*.mov
+*.MOV
+*.avi
+*.mkv
+# Uncomment to ignore large video files:
+# public/videos/*.mp4
+# public/videos/*.webm
+
+# Temporary image files
+*.tmp
+*.temp
