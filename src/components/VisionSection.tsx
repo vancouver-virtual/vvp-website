@@ -69,10 +69,11 @@ export default function VisionSection() {
 
             const progressPerStatement = 1 / visionStatements.length;
 
-            const statementStart = index * progressPerStatement;
+            // Start first statement earlier (at -0.15 instead of 0)
+            const statementStart = (index * progressPerStatement) - 0.15;
             const fadeInEnd = statementStart + (progressPerStatement * 0.3);
             const holdEnd = statementStart + (progressPerStatement * 0.7);
-            const statementEnd = (index + 1) * progressPerStatement;
+            const statementEnd = (index + 1) * progressPerStatement - 0.15;
 
             if (localProgress < statementStart) {
               gsap.set(statement, { opacity: 0, scale: 0.8, y: 30 });
