@@ -97,8 +97,9 @@ export default function Home() {
           invalidateOnRefresh: true,
           snap: prefersReducedMotion ? false : {
             snapTo: snapPoints,
-            duration: { min: 0.2, max: 0.5 },
-            ease: 'power1.inOut',
+            duration: { min: 0.3, max: 0.8 },
+            delay: 0.1,
+            ease: 'power2.inOut',
           },
           onUpdate: (self) => {
             // Update URL hash based on scroll progress
