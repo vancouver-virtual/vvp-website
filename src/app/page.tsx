@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import tokens from '../../design/tokens.json';
@@ -12,10 +13,17 @@ import VisionSection from '@/components/VisionSection';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [containerWidth, setContainerWidth] = useState('200vw');
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<HTMLDivElement>(null);
+
+  const handleNavigate = (href: string) => {
+    // Cleanup ScrollTrigger before navigating
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    router.push(href);
+  };
 
   useEffect(() => {
     const sections = sectionsRef.current;
@@ -295,31 +303,72 @@ export default function Home() {
                 flexDirection: 'column',
                 gap: `${tokens.spacing.sm}px`,
               }}>
-                {['Services', 'Our Vision', 'Tour the Facility', 'Meet the Team'].map((item) => (
-                  <button
-                    key={item}
-                    style={{
-                      background: 'transparent',
-                      border: `1px solid ${tokens.colors.glass.border}`,
-                      borderRadius: `${tokens.radii.pill}px`,
-                      padding: `${tokens.spacing.sm}px ${tokens.spacing.md}px`,
-                      color: tokens.colors.on.bg,
-                      textTransform: 'uppercase',
-                      fontWeight: 700,
-                      letterSpacing: tokens.typography.letterSpacing.nav,
-                      fontSize: '11px',
-                      cursor: 'pointer',
-                      transition: `all ${tokens.motion.dur.base}ms ${tokens.motion.ease.emphasis}`,
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.opacity = '0.85';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.opacity = '1';
-                    }}
-                  >
-                    {item}
-                  </button>
+                {[
+                  { label: 'Services', href: '#services' },
+                  { label: 'Our Vision', href: '#vision' },
+                  { label: 'Tour the Facility', href: '/tour' },
+                  { label: 'Meet the Team', href: '#team' },
+                ].map((item) => (
+                  item.href.startsWith('/') ? (
+                    <button
+                      key={item.label}
+                      onClick={() => handleNavigate(item.href)}
+                      style={{
+                        background: 'transparent',
+                        border: `1px solid ${tokens.colors.glass.border}`,
+                        borderRadius: `${tokens.radii.pill}px`,
+                        padding: `${tokens.spacing.sm}px ${tokens.spacing.md}px`,
+                        color: tokens.colors.on.bg,
+                        textTransform: 'uppercase',
+                        fontWeight: 700,
+                        letterSpacing: tokens.typography.letterSpacing.nav,
+                        fontSize: '11px',
+                        cursor: 'pointer',
+                        transition: `all ${tokens.motion.dur.base}ms ${tokens.motion.ease.emphasis}`,
+                        textDecoration: 'none',
+                        display: 'block',
+                        textAlign: 'center',
+                        width: '100%',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.opacity = '0.85';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = '1';
+                      }}
+                    >
+                      {item.label}
+                    </button>
+                  ) : (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      style={{
+                        background: 'transparent',
+                        border: `1px solid ${tokens.colors.glass.border}`,
+                        borderRadius: `${tokens.radii.pill}px`,
+                        padding: `${tokens.spacing.sm}px ${tokens.spacing.md}px`,
+                        color: tokens.colors.on.bg,
+                        textTransform: 'uppercase',
+                        fontWeight: 700,
+                        letterSpacing: tokens.typography.letterSpacing.nav,
+                        fontSize: '11px',
+                        cursor: 'pointer',
+                        transition: `all ${tokens.motion.dur.base}ms ${tokens.motion.ease.emphasis}`,
+                        textDecoration: 'none',
+                        display: 'block',
+                        textAlign: 'center',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.opacity = '0.85';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = '1';
+                      }}
+                    >
+                      {item.label}
+                    </a>
+                  )
                 ))}
               </nav>
             </div>
