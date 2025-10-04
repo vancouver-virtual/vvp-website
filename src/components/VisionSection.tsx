@@ -31,8 +31,7 @@ export default function VisionSection() {
       // Show only middle statement, no animations
       statements.forEach((statement, index) => {
         if (!statement) return;
-        const spans = statement.querySelectorAll('span');
-        gsap.set(spans, { opacity: index === 1 ? 1 : 0, scale: 1, y: 0 });
+        gsap.set(statement, { opacity: index === 1 ? 1 : 0, scale: 1, y: 0 });
       });
       return;
     }
@@ -40,9 +39,10 @@ export default function VisionSection() {
     // Set initial state
     statements.forEach((statement) => {
       if (!statement) return;
-      const spans = statement.querySelectorAll('span');
-      gsap.set(spans, { opacity: 0, scale: 0.8, y: 30 });
+      gsap.set(statement, { opacity: 0, scale: 0.8, y: 30 });
     });
+
+    let tickerCleanup: (() => void) | null = null;
 
     const timer = setTimeout(() => {
       // Find parent horizontal scroll trigger
@@ -52,7 +52,7 @@ export default function VisionSection() {
       if (!parentScrollTrigger) return;
 
       // Read progress window from data attributes (set by parent)
-      const visionStart = parseFloat(container.dataset.progressStart || '0.66');
+      const visionStart = parseFloat(container.dataset.progressStart || '0.10');
       const visionEnd = parseFloat(container.dataset.progressEnd || '1.0');
       const visionRange = visionEnd - visionStart;
 
@@ -67,7 +67,6 @@ export default function VisionSection() {
           statements.forEach((statement, index) => {
             if (!statement) return;
 
-            const spans = statement.querySelectorAll('span');
             const progressPerStatement = 1 / visionStatements.length;
 
             const statementStart = index * progressPerStatement;
@@ -76,68 +75,56 @@ export default function VisionSection() {
             const statementEnd = (index + 1) * progressPerStatement;
 
             if (localProgress < statementStart) {
-              gsap.set(spans, { opacity: 0, scale: 0.8, y: 30 });
+              gsap.set(statement, { opacity: 0, scale: 0.8, y: 30 });
             } else if (localProgress >= statementStart && localProgress < fadeInEnd) {
               const phaseProgress = (localProgress - statementStart) / (fadeInEnd - statementStart);
-              spans.forEach((span) => {
-                gsap.set(span, {
-                  opacity: phaseProgress,
-                  scale: 0.8 + (phaseProgress * 0.2),
-                  y: 30 - (phaseProgress * 30)
-                });
+              gsap.set(statement, {
+                opacity: phaseProgress,
+                scale: 0.8 + (phaseProgress * 0.2),
+                y: 30 - (phaseProgress * 30)
               });
             } else if (localProgress >= fadeInEnd && localProgress < holdEnd) {
-              spans.forEach((span) => {
-                gsap.set(span, { opacity: 1, scale: 1, y: 0 });
-              });
+              gsap.set(statement, { opacity: 1, scale: 1, y: 0 });
             } else if (localProgress >= holdEnd && localProgress < statementEnd) {
               const phaseProgress = (localProgress - holdEnd) / (statementEnd - holdEnd);
-              spans.forEach((span) => {
-                gsap.set(span, {
-                  opacity: 1 - phaseProgress,
-                  scale: 1 + (phaseProgress * 0.1),
-                  y: -(phaseProgress * 20)
-                });
+              gsap.set(statement, {
+                opacity: 1 - phaseProgress,
+                scale: 1 + (phaseProgress * 0.1),
+                y: -(phaseProgress * 20)
               });
             } else {
-              gsap.set(spans, { opacity: 0, scale: 1.1, y: -20 });
+              gsap.set(statement, { opacity: 0, scale: 1.1, y: -20 });
             }
           });
         } else if (parentProgress < visionStart) {
           // Before Vision section
           statements.forEach((statement) => {
             if (!statement) return;
-            const spans = statement.querySelectorAll('span');
-            gsap.set(spans, { opacity: 0, scale: 0.8, y: 30 });
+            gsap.set(statement, { opacity: 0, scale: 0.8, y: 30 });
           });
         }
       };
 
       gsap.ticker.add(tickerFunc);
 
-      return () => {
+      tickerCleanup = () => {
         gsap.ticker.remove(tickerFunc);
       };
     }, 400);
 
     return () => {
       clearTimeout(timer);
+      if (tickerCleanup) {
+        tickerCleanup();
+      }
     };
   }, []);
 
-  const splitTextIntoSpans = (text: string) => {
-    const words = text.split(' ');
-    return words.map((word, i) => (
-      <span key={i} style={{ display: 'inline-block', marginRight: '0.3em' }}>
-        {word}
-      </span>
-    ));
-  };
 
   return (
     <div
       ref={containerRef}
-      data-progress-start="0.66"
+      data-progress-start="0.10"
       data-progress-end="1.0"
       style={{
         position: 'relative',
@@ -194,7 +181,7 @@ export default function VisionSection() {
               textTransform: 'uppercase',
             }}
           >
-            {splitTextIntoSpans(statement)}
+            {statement}
           </div>
         </div>
       ))}

@@ -29,9 +29,6 @@ export default function Home() {
     // Reset transform on sections
     gsap.set(sections, { x: 0 });
 
-    // Calculate scroll width to accommodate Landing + Services
-    // Vision is outside horizontal scroll container
-
     // Landing section takes up 100vw
     const landingSectionWidth = window.innerWidth;
 
@@ -108,9 +105,8 @@ export default function Home() {
             const progress = self.progress;
             let newSection = '';
 
-            // Use more precise progress values based on actual sections
+            // Calculate thresholds based on total scroll distance
             const landingThreshold = landingEnd / totalScrollDistance;
-            const servicesThreshold = servicesEnd / totalScrollDistance;
             const visionThreshold = horizontalScrollDistance / totalScrollDistance;
 
             if (progress < landingThreshold) {
@@ -143,7 +139,7 @@ export default function Home() {
       }, horizontalScrollDistance / totalScrollDistance);
 
       // Update Vision section's data attributes with exact progress window
-      // Vision animations start AFTER horizontal scroll completes (at progress 1.0 of horizontal)
+      // Vision animations start AFTER horizontal scroll completes
       const visionStartProgress = horizontalScrollDistance / totalScrollDistance;
       const visionEndProgress = 1.0;
       const visionElement = sections.querySelector('[data-progress-start]') as HTMLElement;
