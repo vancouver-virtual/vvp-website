@@ -31,7 +31,7 @@ export default function ServicesSection() {
   return (
     <div style={{
       position: 'relative',
-      width: 'calc(100vw + 1px)',
+      minWidth: '100vw',
       height: '100vh',
       flexShrink: 0,
       scrollSnapAlign: 'start',
@@ -95,7 +95,7 @@ export default function ServicesSection() {
         <div style={{
           flex: 1,
           position: 'relative',
-          overflow: 'hidden',
+          overflow: 'visible',
         }}>
           <div style={{
             display: 'grid',

@@ -12,6 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [containerWidth, setContainerWidth] = useState('200vw');
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<HTMLDivElement>(null);
 
@@ -21,8 +22,35 @@ export default function Home() {
 
     if (!sections || !container) return;
 
-    // Scroll only from Landing to Services (100vw)
-    const scrollWidth = window.innerWidth;
+    // Calculate scroll width to accommodate all service cards
+    // Need to scroll from Landing (100vw) to the end of all service cards
+    
+    // Landing section takes up 100vw
+    const landingSectionWidth = window.innerWidth;
+    
+    // Services section calculations
+    const sectionPadding = 48; // tokens.spacing['3xl'] = 48px (both sides)
+    const leftContentWidth = 400;
+    const gapBetweenContentAndGrid = 48; // tokens.spacing['3xl']
+    const cardWidth = 330;
+    const cardGap = 24; // tokens.spacing['2xl'] = 24px
+    const cardsPerRow = 4;
+    const bottomRowOffset = 50; // offset for bottom row cards
+    const gridPaddingRight = 48; // padding at the end of grid
+    
+    // Calculate total width of service cards grid
+    const totalCardsWidth = (cardWidth * cardsPerRow) + (cardGap * (cardsPerRow - 1)) + bottomRowOffset;
+    
+    // Calculate how much of services section needs to be visible beyond the viewport
+    // When fully scrolled, we want to see: left content + gap + all cards + padding
+    const servicesContentWidth = sectionPadding + leftContentWidth + gapBetweenContentAndGrid + totalCardsWidth + gridPaddingRight + sectionPadding;
+    
+    // Total scroll distance = full landing section + services content that needs to scroll into view
+    const scrollWidth = landingSectionWidth + (servicesContentWidth - window.innerWidth);
+
+    // Update container width
+    const widthInVw = 100 + (scrollWidth / window.innerWidth) * 100;
+    setContainerWidth(`${widthInVw}vw`);
 
     let currentSection = '';
 
@@ -342,7 +370,7 @@ export default function Home() {
           ref={sectionsRef}
           style={{
             display: 'flex',
-            width: '200vw',
+            width: containerWidth,
             height: '100vh',
             willChange: 'transform',
           }}
