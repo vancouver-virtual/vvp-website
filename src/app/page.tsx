@@ -307,7 +307,7 @@ export default function Home() {
                   { label: 'Services', href: '#services' },
                   { label: 'Our Vision', href: '#vision' },
                   { label: 'Tour the Facility', href: '/tour' },
-                  { label: 'Meet the Team', href: '#team' },
+                  { label: 'Meet the Team', href: '/team' },
                 ].map((item) => (
                   item.href.startsWith('/') ? (
                     <button
