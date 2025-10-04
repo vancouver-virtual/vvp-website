@@ -29,8 +29,8 @@ export default function Home() {
     // Reset transform on sections
     gsap.set(sections, { x: 0 });
 
-    // Calculate scroll width to accommodate all sections
-    // Need to scroll from Landing (100vw) → Services → Vision
+    // Calculate scroll width to accommodate Landing + Services
+    // Vision is outside horizontal scroll container
 
     // Landing section takes up 100vw
     const landingSectionWidth = window.innerWidth;
@@ -49,13 +49,12 @@ export default function Home() {
     const totalCardsWidth = (cardWidth * cardsPerRow) + (cardGap * (cardsPerRow - 1)) + bottomRowOffset;
 
     // Calculate how much of services section needs to be visible beyond the viewport
-    // When fully scrolled, we want to see: left content + gap + all cards + padding
     const servicesContentWidth = sectionPadding + leftContentWidth + gapBetweenContentAndGrid + totalCardsWidth + gridPaddingRight + sectionPadding;
 
-    // Vision section should NOT extend horizontal scroll - it transitions to vertical
-    const visionSectionWidth = 0; // Don't add to horizontal scroll width
+    // Vision section width - 3 statements × 100vw each
+    const visionSectionWidth = window.innerWidth * 3;
 
-    // Total scroll distance = landing + services overflow + vision section
+    // Total scroll distance = landing + services overflow + vision (3 sections)
     const scrollWidth = landingSectionWidth + (servicesContentWidth - window.innerWidth) + visionSectionWidth;
 
     // Update container width
@@ -392,11 +391,9 @@ export default function Home() {
         >
           <LandingSection />
           <ServicesSection />
+          <VisionSection />
         </div>
       </div>
-
-      {/* Vision Section - Outside horizontal scroll, uses vertical scroll */}
-      <VisionSection />
 
     </>
   );
