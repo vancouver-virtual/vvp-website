@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import tokens from '../../design/tokens.json';
 import LandingSection from '@/components/LandingSection';
 import ServicesSection from '@/components/ServicesSection';
+import VisionSection from '@/components/VisionSection';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,8 +29,8 @@ export default function Home() {
     // Reset transform on sections
     gsap.set(sections, { x: 0 });
 
-    // Calculate scroll width to accommodate all service cards
-    // Need to scroll from Landing (100vw) to the end of all service cards
+    // Calculate scroll width to accommodate all sections
+    // Need to scroll from Landing (100vw) → Services → Vision
 
     // Landing section takes up 100vw
     const landingSectionWidth = window.innerWidth;
@@ -51,8 +52,11 @@ export default function Home() {
     // When fully scrolled, we want to see: left content + gap + all cards + padding
     const servicesContentWidth = sectionPadding + leftContentWidth + gapBetweenContentAndGrid + totalCardsWidth + gridPaddingRight + sectionPadding;
 
-    // Total scroll distance = full landing section + services content that needs to scroll into view
-    const scrollWidth = landingSectionWidth + (servicesContentWidth - window.innerWidth);
+    // Vision section takes up 100vw (pins in place, no horizontal scroll)
+    const visionSectionWidth = window.innerWidth;
+
+    // Total scroll distance = landing + services overflow + vision section
+    const scrollWidth = landingSectionWidth + (servicesContentWidth - window.innerWidth) + visionSectionWidth;
 
     // Update container width
     const widthInVw = 100 + (scrollWidth / window.innerWidth) * 100;
@@ -77,10 +81,12 @@ export default function Home() {
             const progress = self.progress;
             let newSection = '';
 
-            if (progress < 0.5) {
+            if (progress < 0.33) {
               newSection = '';
-            } else {
+            } else if (progress < 0.66) {
               newSection = 'services';
+            } else {
+              newSection = 'vision';
             }
 
             // Only update if section changed
@@ -386,6 +392,7 @@ export default function Home() {
         >
           <LandingSection />
           <ServicesSection />
+          <VisionSection />
         </div>
       </div>
 
