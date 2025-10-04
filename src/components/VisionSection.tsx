@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import tokens from '../../design/tokens.json';
+import styles from './VisionSection.module.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -64,10 +65,10 @@ export default function VisionSection() {
           const localProgress = (parentProgress - visionStart) / visionRange;
 
           // Each statement gets 1/3 of the progress
+          const progressPerStatement = 1 / visionStatements.length;
+
           statements.forEach((statement, index) => {
             if (!statement) return;
-
-            const progressPerStatement = 1 / visionStatements.length;
 
             // Start first statement earlier (at -0.15 instead of 0)
             const statementStart = (index * progressPerStatement) - 0.15;
@@ -136,6 +137,9 @@ export default function VisionSection() {
         background: tokens.colors.bg.base,
       }}
     >
+      {/* Aurora background */}
+      <div className={styles.container} />
+
       {/* Single "Our Vision" header - absolute position within Vision section */}
       <div style={{
         position: 'absolute',
