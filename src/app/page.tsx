@@ -52,8 +52,8 @@ export default function Home() {
     // When fully scrolled, we want to see: left content + gap + all cards + padding
     const servicesContentWidth = sectionPadding + leftContentWidth + gapBetweenContentAndGrid + totalCardsWidth + gridPaddingRight + sectionPadding;
 
-    // Vision section takes up 100vw (pins in place, no horizontal scroll)
-    const visionSectionWidth = window.innerWidth;
+    // Vision section should NOT extend horizontal scroll - it transitions to vertical
+    const visionSectionWidth = 0; // Don't add to horizontal scroll width
 
     // Total scroll distance = landing + services overflow + vision section
     const scrollWidth = landingSectionWidth + (servicesContentWidth - window.innerWidth) + visionSectionWidth;
@@ -392,9 +392,11 @@ export default function Home() {
         >
           <LandingSection />
           <ServicesSection />
-          <VisionSection />
         </div>
       </div>
+
+      {/* Vision Section - Outside horizontal scroll, uses vertical scroll */}
+      <VisionSection />
 
     </>
   );
