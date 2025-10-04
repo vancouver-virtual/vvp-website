@@ -22,12 +22,18 @@ export default function Home() {
 
     if (!sections || !container) return;
 
+    // Kill any existing ScrollTriggers to prevent conflicts when returning from other pages
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
+    // Reset transform on sections
+    gsap.set(sections, { x: 0 });
+
     // Calculate scroll width to accommodate all service cards
     // Need to scroll from Landing (100vw) to the end of all service cards
-    
+
     // Landing section takes up 100vw
     const landingSectionWidth = window.innerWidth;
-    
+
     // Services section calculations
     const sectionPadding = 48; // tokens.spacing['3xl'] = 48px (both sides)
     const leftContentWidth = 400;
@@ -37,14 +43,14 @@ export default function Home() {
     const cardsPerRow = 4;
     const bottomRowOffset = 50; // offset for bottom row cards
     const gridPaddingRight = 48; // padding at the end of grid
-    
+
     // Calculate total width of service cards grid
     const totalCardsWidth = (cardWidth * cardsPerRow) + (cardGap * (cardsPerRow - 1)) + bottomRowOffset;
-    
+
     // Calculate how much of services section needs to be visible beyond the viewport
     // When fully scrolled, we want to see: left content + gap + all cards + padding
     const servicesContentWidth = sectionPadding + leftContentWidth + gapBetweenContentAndGrid + totalCardsWidth + gridPaddingRight + sectionPadding;
-    
+
     // Total scroll distance = full landing section + services content that needs to scroll into view
     const scrollWidth = landingSectionWidth + (servicesContentWidth - window.innerWidth);
 
@@ -54,44 +60,47 @@ export default function Home() {
 
     let currentSection = '';
 
-    // Create horizontal scroll animation
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: container,
-        start: 'top top',
-        end: () => `+=${scrollWidth}`,
-        scrub: 1,
-        pin: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          // Update URL hash based on scroll progress
-          const progress = self.progress;
-          let newSection = '';
+    // Small delay to ensure DOM is ready and previous ScrollTriggers are fully cleaned up
+    const timer = setTimeout(() => {
+      // Create horizontal scroll animation
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container,
+          start: 'top top',
+          end: () => `+=${scrollWidth}`,
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            // Update URL hash based on scroll progress
+            const progress = self.progress;
+            let newSection = '';
 
-          if (progress < 0.5) {
-            newSection = '';
-          } else {
-            newSection = 'services';
-          }
+            if (progress < 0.5) {
+              newSection = '';
+            } else {
+              newSection = 'services';
+            }
 
-          // Only update if section changed
-          if (newSection !== currentSection) {
-            currentSection = newSection;
-            const newUrl = newSection ? `/#${newSection}` : '/';
-            window.history.replaceState(null, '', newUrl);
-          }
+            // Only update if section changed
+            if (newSection !== currentSection) {
+              currentSection = newSection;
+              const newUrl = newSection ? `/#${newSection}` : '/';
+              window.history.replaceState(null, '', newUrl);
+            }
+          },
         },
-      },
-    });
+      });
 
-    tl.to(sections, {
-      x: () => -scrollWidth,
-      ease: 'none',
-    });
+      tl.to(sections, {
+        x: () => -scrollWidth,
+        ease: 'none',
+      });
+    }, 100);
 
     return () => {
-      tl.kill();
+      clearTimeout(timer);
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
