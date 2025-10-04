@@ -5,14 +5,62 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import tokens from '../../design/tokens.json';
 
 const services = [
-  { name: 'Commercial', label: 'COMMERCIAL', slug: 'commercial' },
-  { name: 'Cinema', label: 'CINEMA', slug: 'cinema' },
-  { name: 'Sports', label: 'SPORTS', slug: 'sports' },
-  { name: 'Podcasting', label: 'PODCASTING', slug: 'podcasting' },
-  { name: 'Live Event Space', label: 'LIVE EVENT SPACE', slug: 'live-event-space' },
-  { name: 'Product Reveal Stage', label: 'PRODUCT REVEAL STAGE', slug: 'product-reveal-stage' },
-  { name: 'Music Videos', label: 'MUSIC VIDEOS', slug: 'music-videos' },
-  { name: 'Immersive Experiences', label: 'IMMERSIVE EXPERIENCES', slug: 'immersive-experiences' }
+  { 
+    name: 'Commercial', 
+    label: 'COMMERCIAL', 
+    slug: 'commercial',
+    preHeader: 'Advertising & Growth',
+    description: 'High-impact brand films for TV, CTV, and social—virtual sets, motion graphics, and fast turnarounds built for performance.'
+  },
+  { 
+    name: 'Cinema', 
+    label: 'CINEMA', 
+    slug: 'cinema',
+    preHeader: 'Narrative Film & Series',
+    description: 'Previz to finals with ICVFX, CG, and DI—director-first workflows that protect vision and schedule.'
+  },
+  { 
+    name: 'Sports', 
+    label: 'SPORTS', 
+    slug: 'sports',
+    preHeader: 'Leagues, Teams & Broadcast',
+    description: 'Real-time AR/XR moments, broadcast graphics, and in-venue LED content that energize fans and sponsors.'
+  },
+  { 
+    name: 'Podcasting', 
+    label: 'PODCASTING', 
+    slug: 'podcasting',
+    preHeader: 'Creators & Brands',
+    description: 'Multi-cam capture, branded virtual sets, and growth-ready clip packs—premium sound and seamless delivery.'
+  },
+  { 
+    name: 'Live Event Space', 
+    label: 'LIVE EVENT SPACE', 
+    slug: 'live-event-space',
+    preHeader: 'Events & Broadcast',
+    description: 'LED volume, lighting, audio, and streaming control—turnkey stage for launches, town halls, and keynotes.'
+  },
+  { 
+    name: 'Product Reveal Stage', 
+    label: 'PRODUCT REVEAL STAGE', 
+    slug: 'product-reveal-stage',
+    preHeader: 'Launches & Keynotes',
+    description: 'Cinematic LED reveals and photoreal CG deep dives—designed to make your product the hero.'
+  },
+  { 
+    name: 'Music Videos', 
+    label: 'MUSIC VIDEOS', 
+    slug: 'music-videos',
+    preHeader: 'Artists & Labels',
+    description: 'Stylized virtual environments and fast post—ambitious visuals without runaway logistics.'
+  },
+  { 
+    name: 'Immersive Experiences', 
+    label: 'IMMERSIVE EXPERIENCES', 
+    slug: 'immersive-experiences',
+    preHeader: 'Experiential & XR',
+    description: 'Interactive installations and XR activations that blend physical and digital—and prove engagement.'
+  }
 ];
 
 export default function ServicesSection() {
@@ -41,7 +89,7 @@ export default function ServicesSection() {
       flexDirection: 'column',
       gap: `${tokens.spacing['2xl']}px`,
     }}>
-      {/* Page Title */}
+      {/* Pre-header */}
       <div style={{
         fontSize: tokens.typography.size.body,
         color: tokens.colors.on.bgSecondary,
@@ -75,11 +123,7 @@ export default function ServicesSection() {
             margin: 0,
             textTransform: 'uppercase',
           }}>
-            DIVERSE.<br />
-            OPEN-MINDED.<br />
-            RESOURCEFUL.<br />
-            INFORMED.<br />
-            ALIGNED.
+            Virtual production. Premium content. Measurable impact.
           </h2>
           <p style={{
             fontSize: tokens.typography.size.body,
@@ -87,7 +131,7 @@ export default function ServicesSection() {
             lineHeight: '1.6',
             margin: 0,
           }}>
-            Approximately 20% of AUM is internal capital invested alongside our clients.*
+            We design, produce, and deliver content that looks premium, ships on time, and moves the metrics that matter.
           </p>
         </div>
 
@@ -146,7 +190,7 @@ export default function ServicesSection() {
                     textTransform: 'uppercase',
                     fontWeight: tokens.typography.weight.medium,
                   }}>
-                    LEADERSHIP
+                    {service.preHeader}
                   </div>
                   <div style={{
                     fontSize: '28px',
@@ -162,8 +206,7 @@ export default function ServicesSection() {
                     color: tokens.colors.on.bgSecondary,
                     lineHeight: '1.4',
                   }}>
-                    Co-Founder<br />
-                    Chief Investment Officer
+                    {service.description}
                   </div>
                 </div>
               );
