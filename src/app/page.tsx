@@ -51,38 +51,71 @@ export default function Home() {
     // Calculate how much of services section needs to be visible beyond the viewport
     const servicesContentWidth = sectionPadding + leftContentWidth + gapBetweenContentAndGrid + totalCardsWidth + gridPaddingRight + sectionPadding;
 
-    // Vision section width - 3 statements × 100vw each
-    const visionSectionWidth = window.innerWidth * 3;
+    // Vision section width - just 100vw (statements appear in place)
+    const visionSectionWidth = window.innerWidth;
 
-    // Total scroll distance = landing + services overflow + vision (3 sections)
-    const scrollWidth = landingSectionWidth + (servicesContentWidth - window.innerWidth) + visionSectionWidth;
-
-    // Update container width
-    const widthInVw = 100 + (scrollWidth / window.innerWidth) * 100;
+    // Container needs to hold all three sections side by side
+    // Landing (100vw) + Services (servicesContentWidth) + Vision (100vw)
+    const totalContainerWidth = landingSectionWidth + servicesContentWidth + visionSectionWidth;
+    const widthInVw = (totalContainerWidth / window.innerWidth) * 100;
     setContainerWidth(`${widthInVw}vw`);
 
     let currentSection = '';
 
+    // Calculate horizontal scroll distance (how far we need to translate to show Vision)
+    // We need to move past Landing (100vw) and Services (servicesContentWidth) minus the viewport
+    const horizontalScrollDistance = landingSectionWidth + servicesContentWidth;
+
+    // Calculate snap points based on scroll distances
+    const landingEnd = landingSectionWidth;
+    const servicesEnd = landingSectionWidth + (servicesContentWidth - window.innerWidth);
+
+    // Convert to progress values (0-1) for the horizontal scroll
+    const snapPoints = [
+      0,
+      landingEnd / horizontalScrollDistance,
+      servicesEnd / horizontalScrollDistance,
+      1,
+    ];
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     // Small delay to ensure DOM is ready and previous ScrollTriggers are fully cleaned up
     const timer = setTimeout(() => {
       // Create horizontal scroll animation
+      // The horizontal scroll needs to move Landing + Services out, bringing Vision into view
+      // PLUS extra scroll distance for Vision statement animations
+      const visionAnimationScrollHeight = window.innerHeight * 2; // Extra scroll for 3 statements
+      const totalScrollDistance = horizontalScrollDistance + visionAnimationScrollHeight;
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: container,
           start: 'top top',
-          end: () => `+=${scrollWidth}`,
+          end: () => `+=${totalScrollDistance}`,
           scrub: 1,
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          snap: prefersReducedMotion ? false : {
+            snapTo: snapPoints,
+            duration: { min: 0.2, max: 0.5 },
+            ease: 'power1.inOut',
+          },
           onUpdate: (self) => {
             // Update URL hash based on scroll progress
             const progress = self.progress;
             let newSection = '';
 
-            if (progress < 0.33) {
+            // Use more precise progress values based on actual sections
+            const landingThreshold = landingEnd / totalScrollDistance;
+            const servicesThreshold = servicesEnd / totalScrollDistance;
+            const visionThreshold = horizontalScrollDistance / totalScrollDistance;
+
+            if (progress < landingThreshold) {
               newSection = '';
-            } else if (progress < 0.66) {
+            } else if (progress < visionThreshold) {
               newSection = 'services';
             } else {
               newSection = 'vision';
@@ -98,10 +131,26 @@ export default function Home() {
         },
       });
 
+      // Move sections horizontally until Vision is in view, then hold position
       tl.to(sections, {
-        x: () => -scrollWidth,
+        x: () => -horizontalScrollDistance,
         ease: 'none',
-      });
+      }, 0)
+      // Add a hold at the end (no movement during Vision animations)
+      .to(sections, {
+        x: () => -horizontalScrollDistance,
+        ease: 'none',
+      }, horizontalScrollDistance / totalScrollDistance);
+
+      // Update Vision section's data attributes with exact progress window
+      // Vision animations start AFTER horizontal scroll completes (at progress 1.0 of horizontal)
+      const visionStartProgress = horizontalScrollDistance / totalScrollDistance;
+      const visionEndProgress = 1.0;
+      const visionElement = sections.querySelector('[data-progress-start]') as HTMLElement;
+      if (visionElement) {
+        visionElement.dataset.progressStart = visionStartProgress.toString();
+        visionElement.dataset.progressEnd = visionEndProgress.toString();
+      }
     }, 100);
 
     return () => {
@@ -121,6 +170,17 @@ export default function Home() {
           position: 'relative',
         }}
       >
+        {/* Fixed stationary black background */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: tokens.colors.bg.base,
+          zIndex: 0,
+        }} />
+
         {/* Right Menu Bar - Absolute position so it scrolls with content */}
         <div style={{
           position: 'absolute',
