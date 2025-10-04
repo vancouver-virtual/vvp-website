@@ -63,20 +63,8 @@ export default function Home() {
     // We need to move past Landing (100vw) and Services (servicesContentWidth) minus the viewport
     const horizontalScrollDistance = landingSectionWidth + servicesContentWidth;
 
-    // Calculate snap points based on scroll distances
+    // Calculate thresholds for URL hash updates
     const landingEnd = landingSectionWidth;
-    const servicesEnd = landingSectionWidth + (servicesContentWidth - window.innerWidth);
-
-    // Convert to progress values (0-1) for the horizontal scroll
-    const snapPoints = [
-      0,
-      landingEnd / horizontalScrollDistance,
-      servicesEnd / horizontalScrollDistance,
-      1,
-    ];
-
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Small delay to ensure DOM is ready and previous ScrollTriggers are fully cleaned up
     const timer = setTimeout(() => {
@@ -95,12 +83,6 @@ export default function Home() {
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          snap: prefersReducedMotion ? false : {
-            snapTo: snapPoints,
-            duration: { min: 0.3, max: 0.8 },
-            delay: 0.1,
-            ease: 'power2.inOut',
-          },
           onUpdate: (self) => {
             // Update URL hash based on scroll progress
             const progress = self.progress;
