@@ -79,7 +79,7 @@ export default function Home() {
       // Create horizontal scroll animation
       // The horizontal scroll needs to move Landing + Services out, bringing Vision into view
       // PLUS extra scroll distance for Vision statement animations
-      const visionAnimationScrollHeight = window.innerHeight * 2; // Extra scroll for 3 statements
+      const visionAnimationScrollHeight = window.innerHeight * 0.8; // Reduced scroll for tighter statement transitions
       const totalScrollDistance = horizontalScrollDistance + visionAnimationScrollHeight;
 
       const tl = gsap.timeline({

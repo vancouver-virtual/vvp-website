@@ -59,13 +59,15 @@ export default function LandingSection() {
               position: 'absolute',
               bottom: `${tokens.spacing['2xl']}px`,
               left: `${tokens.spacing['2xl']}px`,
-              padding: `${tokens.spacing.lg}px ${tokens.spacing.xl}px`,
+              padding: `${tokens.spacing.sm}px ${tokens.spacing.xl}px`,
               backgroundColor: '#f5f5f5',
               backdropFilter: `blur(${tokens.blur.glass}px) saturate(140%)`,
               border: `1px solid ${tokens.colors.glass.border}`,
               borderRadius: `${tokens.radii.pill}px`,
               cursor: 'pointer',
-              fontSize: tokens.typography.size.body,
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: tokens.typography.size.sm,
               fontWeight: tokens.typography.weight.heavy,
               letterSpacing: tokens.typography.letterSpacing.nav,
               textTransform: 'uppercase',
@@ -92,7 +94,8 @@ export default function LandingSection() {
               e.currentTarget.style.outline = 'none';
             }}
           >
-            Play with sound
+            <span style={{ marginRight: `${tokens.spacing.xs}px`, fontSize: `${tokens.icon.size.md}px` }}>▶</span>
+            Restart with sound
           </button>
         </>
       )}
