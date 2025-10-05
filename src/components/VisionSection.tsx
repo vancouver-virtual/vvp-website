@@ -37,10 +37,14 @@ export default function VisionSection() {
       return;
     }
 
-    // Set initial state
-    statements.forEach((statement) => {
+    // Set initial state - first statement visible, others hidden
+    statements.forEach((statement, index) => {
       if (!statement) return;
-      gsap.set(statement, { opacity: 0, scale: 0.8, y: 30 });
+      if (index === 0) {
+        gsap.set(statement, { opacity: 1, scale: 1, y: 0 });
+      } else {
+        gsap.set(statement, { opacity: 0, scale: 0.8, y: 30 });
+      }
     });
 
     let tickerCleanup: (() => void) | null = null;
@@ -64,27 +68,32 @@ export default function VisionSection() {
         if (parentProgress >= visionStart && parentProgress <= visionEnd) {
           const localProgress = (parentProgress - visionStart) / visionRange;
 
-          // Each statement gets 1/3 of the progress
-          const progressPerStatement = 1 / visionStatements.length;
+          // Compress progress so statements appear closer together
+          const progressPerStatement = 0.15; // Very tight spacing between statements
 
           statements.forEach((statement, index) => {
             if (!statement) return;
 
-            // Start first statement earlier (at -0.15 instead of 0)
-            const statementStart = (index * progressPerStatement) - 0.15;
+            // First statement starts fully visible at progress 0, others start very soon after
+            const statementStart = index * progressPerStatement;
             const fadeInEnd = statementStart + (progressPerStatement * 0.3);
             const holdEnd = statementStart + (progressPerStatement * 0.7);
-            const statementEnd = (index + 1) * progressPerStatement - 0.15;
+            const statementEnd = (index + 1) * progressPerStatement;
 
             if (localProgress < statementStart) {
               gsap.set(statement, { opacity: 0, scale: 0.8, y: 30 });
             } else if (localProgress >= statementStart && localProgress < fadeInEnd) {
-              const phaseProgress = (localProgress - statementStart) / (fadeInEnd - statementStart);
-              gsap.set(statement, {
-                opacity: phaseProgress,
-                scale: 0.8 + (phaseProgress * 0.2),
-                y: 30 - (phaseProgress * 30)
-              });
+              // First statement skips fade-in, starts fully visible
+              if (index === 0) {
+                gsap.set(statement, { opacity: 1, scale: 1, y: 0 });
+              } else {
+                const phaseProgress = (localProgress - statementStart) / (fadeInEnd - statementStart);
+                gsap.set(statement, {
+                  opacity: phaseProgress,
+                  scale: 0.8 + (phaseProgress * 0.2),
+                  y: 30 - (phaseProgress * 30)
+                });
+              }
             } else if (localProgress >= fadeInEnd && localProgress < holdEnd) {
               gsap.set(statement, { opacity: 1, scale: 1, y: 0 });
             } else if (localProgress >= holdEnd && localProgress < statementEnd) {
@@ -99,10 +108,14 @@ export default function VisionSection() {
             }
           });
         } else if (parentProgress < visionStart) {
-          // Before Vision section
-          statements.forEach((statement) => {
+          // Before Vision section - first statement visible, others hidden
+          statements.forEach((statement, index) => {
             if (!statement) return;
-            gsap.set(statement, { opacity: 0, scale: 0.8, y: 30 });
+            if (index === 0) {
+              gsap.set(statement, { opacity: 1, scale: 1, y: 0 });
+            } else {
+              gsap.set(statement, { opacity: 0, scale: 0.8, y: 30 });
+            }
           });
         }
       };

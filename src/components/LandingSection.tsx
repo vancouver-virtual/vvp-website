@@ -1,15 +1,23 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import tokens from '../../design/tokens.json';
 
 export default function LandingSection() {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handlePlayWithSound = () => {
     setIsFullscreen(true);
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play();
+    }
   };
 
   const handleClose = () => {
     setIsFullscreen(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
   };
 
   return (
@@ -23,8 +31,11 @@ export default function LandingSection() {
       {/* Background Video */}
       {!isFullscreen && (
         <>
-          <iframe
-            src="https://player.vimeo.com/video/391516939?background=1&autoplay=1&loop=1&byline=0&title=0"
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
             style={{
               position: 'absolute',
               top: '50%',
@@ -34,12 +45,12 @@ export default function LandingSection() {
               height: '56.25vw',
               minHeight: '100vh',
               minWidth: '177.78vh',
-              border: 'none',
+              objectFit: 'cover',
               zIndex: tokens.z.videoBg,
             }}
-            allow="autoplay; fullscreen"
-            title="Background Video"
-          />
+          >
+            <source src="/videos/TL_Square_Splash_Video.webm" type="video/webm" />
+          </video>
 
           {/* Play with Sound Button */}
           <button
@@ -48,8 +59,8 @@ export default function LandingSection() {
               position: 'absolute',
               bottom: `${tokens.spacing['2xl']}px`,
               left: `${tokens.spacing['2xl']}px`,
-              padding: `${tokens.spacing.sm}px ${tokens.spacing.md}px`,
-              backgroundColor: tokens.colors.glass.bg,
+              padding: `${tokens.spacing.lg}px ${tokens.spacing.xl}px`,
+              backgroundColor: '#f5f5f5',
               backdropFilter: `blur(${tokens.blur.glass}px) saturate(140%)`,
               border: `1px solid ${tokens.colors.glass.border}`,
               borderRadius: `${tokens.radii.pill}px`,
@@ -58,16 +69,20 @@ export default function LandingSection() {
               fontWeight: tokens.typography.weight.heavy,
               letterSpacing: tokens.typography.letterSpacing.nav,
               textTransform: 'uppercase',
-              color: tokens.colors.on.bg,
+              color: '#333333',
               zIndex: tokens.z.content,
               transition: `all ${tokens.motion.dur.base}ms ${tokens.motion.ease.emphasis}`,
               opacity: 1,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.opacity = '0.85';
+              e.currentTarget.style.backgroundColor = '#333333';
+              e.currentTarget.style.color = '#f5f5f5';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.opacity = '1';
+              e.currentTarget.style.backgroundColor = '#f5f5f5';
+              e.currentTarget.style.color = '#333333';
+              e.currentTarget.style.boxShadow = 'none';
             }}
             onFocus={(e) => {
               e.currentTarget.style.outline = `2px solid ${tokens.colors.focus.ring}`;
@@ -93,8 +108,11 @@ export default function LandingSection() {
           backgroundColor: tokens.colors.bg.base,
           zIndex: tokens.z.scrim,
         }}>
-          <iframe
-            src="https://player.vimeo.com/video/391516939?autoplay=1&loop=1&byline=0&title=0"
+          <video
+            ref={videoRef}
+            autoPlay
+            loop
+            playsInline
             style={{
               position: 'absolute',
               top: '50%',
@@ -104,11 +122,11 @@ export default function LandingSection() {
               height: '56.25vw',
               minHeight: '100vh',
               minWidth: '177.78vh',
-              border: 'none',
+              objectFit: 'cover',
             }}
-            allow="autoplay; fullscreen"
-            title="Fullscreen Video"
-          />
+          >
+            <source src="/videos/TL_Square_Splash_Video_Ultra_Compressed.mkv" type="video/x-matroska" />
+          </video>
 
           {/* Close Button */}
           <button
