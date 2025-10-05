@@ -57,8 +57,8 @@ export default function VisionSection() {
       if (!parentScrollTrigger) return;
 
       // Read progress window from data attributes (set by parent)
-      const visionStart = parseFloat(container.dataset.progressStart || '0.10');
-      const visionEnd = parseFloat(container.dataset.progressEnd || '1.0');
+      const visionStart = parseFloat(container.dataset.progressStart || '0');
+      const visionEnd = parseFloat(container.dataset.progressEnd || '1');
       const visionRange = visionEnd - visionStart;
 
       // Use GSAP ticker to sync with parent ScrollTrigger
@@ -139,8 +139,8 @@ export default function VisionSection() {
   return (
     <div
       ref={containerRef}
-      data-progress-start="0.10"
-      data-progress-end="1.0"
+      data-progress-start="0"
+      data-progress-end="1"
       style={{
         position: 'relative',
         minWidth: '100vw',

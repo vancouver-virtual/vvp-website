@@ -9,6 +9,7 @@ import tokens from '../../design/tokens.json';
 import LandingSection from '@/components/LandingSection';
 import ServicesSection from '@/components/ServicesSection';
 import VisionSection from '@/components/VisionSection';
+import ContactSection from '@/components/ContactSection';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -59,28 +60,40 @@ export default function Home() {
     // Vision section width - just 100vw (statements appear in place)
     const visionSectionWidth = window.innerWidth;
 
-    // Container needs to hold all three sections side by side
-    // Landing (100vw) + Services (servicesContentWidth) + Vision (100vw)
-    const totalContainerWidth = landingSectionWidth + servicesContentWidth + visionSectionWidth;
+    // Contact section width - just 100vw (centered form)
+    const contactSectionWidth = window.innerWidth;
+
+    // Container needs to hold all four sections side by side
+    // Landing (100vw) + Services (servicesContentWidth) + Vision (100vw) + Contact (100vw)
+    const totalContainerWidth = landingSectionWidth + servicesContentWidth + visionSectionWidth + contactSectionWidth;
     const widthInVw = (totalContainerWidth / window.innerWidth) * 100;
     setContainerWidth(`${widthInVw}vw`);
 
     let currentSection = '';
 
-    // Calculate horizontal scroll distance (how far we need to translate to show Vision)
-    // We need to move past Landing (100vw) and Services (servicesContentWidth) minus the viewport
-    const horizontalScrollDistance = landingSectionWidth + servicesContentWidth;
+    // Calculate horizontal scroll distance (how far we need to translate to show Contact)
+    // We need to move past Landing (100vw), Services (servicesContentWidth), and Vision (100vw)
+    const horizontalScrollDistance = landingSectionWidth + servicesContentWidth + visionSectionWidth;
 
     // Calculate thresholds for URL hash updates
     const landingEnd = landingSectionWidth;
 
     // Small delay to ensure DOM is ready and previous ScrollTriggers are fully cleaned up
     const timer = setTimeout(() => {
-      // Create horizontal scroll animation
-      // The horizontal scroll needs to move Landing + Services out, bringing Vision into view
-      // PLUS extra scroll distance for Vision statement animations
-      const visionAnimationScrollHeight = window.innerHeight * 0.8; // Reduced scroll for tighter statement transitions
-      const totalScrollDistance = horizontalScrollDistance + visionAnimationScrollHeight;
+      // Create horizontal scroll animation with three stages:
+      // Stage 1: Move through Landing + Services (translateX)
+      // Stage 2: HOLD during Vision animations (no horizontal movement)
+      // Stage 3: Move to Contact (translateX)
+
+      const visionHoldScrollDistance = window.innerHeight * 1.5; // Scroll distance for Vision hold
+
+      // Calculate pixel positions for each stage
+      const stage1End = landingSectionWidth + servicesContentWidth; // End of Services
+      const stage2End = stage1End; // Vision holds (same x position)
+      const stage3End = stage1End + visionSectionWidth; // End at Contact
+
+      // Total scroll distance
+      const totalScrollDistance = stage1End + visionHoldScrollDistance + contactSectionWidth;
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -91,21 +104,54 @@ export default function Home() {
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          snap: {
+            snapTo: (progress) => {
+              // Calculate snap points
+              const landingSnap = landingEnd / totalScrollDistance;
+              const servicesSnap = stage1End / totalScrollDistance;
+              const visionStart = stage1End / totalScrollDistance;
+              const visionThird1 = (stage1End + (visionHoldScrollDistance * 0.33)) / totalScrollDistance;
+              const visionThird2 = (stage1End + (visionHoldScrollDistance * 0.66)) / totalScrollDistance;
+              const visionEnd = (stage1End + visionHoldScrollDistance) / totalScrollDistance;
+              const contactSnap = 1.0;
+
+              const snapPoints = [0, landingSnap, servicesSnap, visionThird1, visionThird2, visionEnd, contactSnap];
+
+              // Find closest snap point
+              let closest = snapPoints[0];
+              let minDiff = Math.abs(progress - closest);
+
+              for (const point of snapPoints) {
+                const diff = Math.abs(progress - point);
+                if (diff < minDiff) {
+                  minDiff = diff;
+                  closest = point;
+                }
+              }
+
+              return closest;
+            },
+            duration: 0.5,
+            ease: 'power2.inOut',
+          },
           onUpdate: (self) => {
             // Update URL hash based on scroll progress
             const progress = self.progress;
             let newSection = '';
 
-            // Calculate thresholds based on total scroll distance
+            // Calculate thresholds
             const landingThreshold = landingEnd / totalScrollDistance;
-            const visionThreshold = horizontalScrollDistance / totalScrollDistance;
+            const servicesThreshold = stage1End / totalScrollDistance;
+            const visionThreshold = (stage1End + visionHoldScrollDistance) / totalScrollDistance;
 
             if (progress < landingThreshold) {
               newSection = '';
-            } else if (progress < visionThreshold) {
+            } else if (progress < servicesThreshold) {
               newSection = 'services';
-            } else {
+            } else if (progress < visionThreshold) {
               newSection = 'vision';
+            } else {
+              newSection = 'contact';
             }
 
             // Only update if section changed
@@ -118,21 +164,28 @@ export default function Home() {
         },
       });
 
-      // Move sections horizontally until Vision is in view, then hold position
+      // Stage 1: Move through Landing + Services
       tl.to(sections, {
-        x: () => -horizontalScrollDistance,
+        x: -stage1End,
         ease: 'none',
-      }, 0)
-      // Add a hold at the end (no movement during Vision animations)
-      .to(sections, {
-        x: () => -horizontalScrollDistance,
+      }, 0);
+
+      // Stage 2: HOLD during Vision (no movement, just scroll time)
+      const visionStartProgress = stage1End / totalScrollDistance;
+      const visionEndProgress = (stage1End + visionHoldScrollDistance) / totalScrollDistance;
+
+      tl.to(sections, {
+        x: -stage2End, // Same position (HOLD)
         ease: 'none',
-      }, horizontalScrollDistance / totalScrollDistance);
+      }, visionEndProgress);
+
+      // Stage 3: Move to Contact
+      tl.to(sections, {
+        x: -stage3End,
+        ease: 'none',
+      }, 1);
 
       // Update Vision section's data attributes with exact progress window
-      // Vision animations start AFTER horizontal scroll completes
-      const visionStartProgress = horizontalScrollDistance / totalScrollDistance;
-      const visionEndProgress = 1.0;
       const visionElement = sections.querySelector('[data-progress-start]') as HTMLElement;
       if (visionElement) {
         visionElement.dataset.progressStart = visionStartProgress.toString();
@@ -480,6 +533,7 @@ export default function Home() {
           <LandingSection />
           <ServicesSection />
           <VisionSection />
+          <ContactSection />
         </div>
       </div>
 
