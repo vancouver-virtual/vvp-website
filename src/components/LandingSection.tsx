@@ -21,13 +21,14 @@ export default function LandingSection() {
   };
 
   return (
-    <div style={{
-      position: 'relative',
-      width: 'calc(100vw + 1px)',
-      height: '100vh',
-      flexShrink: 0,
-      scrollSnapAlign: 'start',
-    }}>
+    <div
+      data-section="landing"
+      style={{
+        position: 'relative',
+        width: '100vw',
+        height: '100vh',
+        flexShrink: 0,
+      }}>
       {/* Background Video */}
       {!isFullscreen && (
         <>

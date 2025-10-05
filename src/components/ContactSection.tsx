@@ -25,6 +25,7 @@ export default function ContactSection() {
 
   return (
     <div
+      data-section="contact"
       style={{
         position: 'relative',
         minWidth: '100vw',

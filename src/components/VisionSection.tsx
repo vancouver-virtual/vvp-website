@@ -1,12 +1,8 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEffect, useRef, useState } from 'react';
 import tokens from '../../design/tokens.json';
 import styles from './VisionSection.module.css';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const visionStatements = [
   "Virtual production, real results.",
@@ -15,194 +11,162 @@ const visionStatements = [
 ];
 
 export default function VisionSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const statementRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const scrollWrapRef = useRef<HTMLDivElement>(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isVisionInView, setIsVisionInView] = useState(false);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    let lastScrollTop = 0;
 
-    const statements = statementRefs.current.filter(Boolean);
-    if (statements.length === 0) return;
+    const handleScroll = () => {
+      const winTop = window.scrollY;
+      const winHeight = window.innerHeight;
+      const winMid = winHeight / 2 + winTop;
+      const winBot = winHeight + winTop;
 
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const scrollWrap = scrollWrapRef.current;
+      if (!scrollWrap) return;
 
-    if (prefersReducedMotion) {
-      // Show only middle statement, no animations
-      statements.forEach((statement, index) => {
-        if (!statement) return;
-        gsap.set(statement, { opacity: index === 1 ? 1 : 0, scale: 1, y: 0 });
-      });
-      return;
-    }
+      // Check if Vision section is in viewport
+      const wrapRect = scrollWrap.getBoundingClientRect();
+      const wrapTop = wrapRect.top + winTop;
+      const wrapBot = wrapTop + wrapRect.height;
+      const inView = wrapBot > winTop && wrapTop < winBot;
+      setIsVisionInView(inView);
 
-    // Set initial state - first statement visible, others hidden
-    statements.forEach((statement, index) => {
-      if (!statement) return;
-      if (index === 0) {
-        gsap.set(statement, { opacity: 1, scale: 1, y: 0 });
-      } else {
-        gsap.set(statement, { opacity: 0, scale: 0.8, y: 30 });
-      }
-    });
+      const scrollTriggers = scrollWrap.querySelectorAll('.scroll-trigger');
+      let activeIndex = 0;
 
-    let tickerCleanup: (() => void) | null = null;
+      scrollTriggers.forEach((trigger, index) => {
+        const rect = trigger.getBoundingClientRect();
+        const liTop = rect.top + winTop;
+        const liBot = liTop + rect.height;
 
-    const timer = setTimeout(() => {
-      // Find parent horizontal scroll trigger
-      const parentTriggers = ScrollTrigger.getAll();
-      const parentScrollTrigger = parentTriggers.find(t => t.vars.pin === true);
-
-      if (!parentScrollTrigger) return;
-
-      // Read progress window from data attributes (set by parent)
-      const visionStart = parseFloat(container.dataset.progressStart || '0');
-      const visionEnd = parseFloat(container.dataset.progressEnd || '1');
-      const visionRange = visionEnd - visionStart;
-
-      // Use GSAP ticker to sync with parent ScrollTrigger
-      const tickerFunc = () => {
-        const parentProgress = parentScrollTrigger.progress;
-
-        if (parentProgress >= visionStart && parentProgress <= visionEnd) {
-          const localProgress = (parentProgress - visionStart) / visionRange;
-
-          // Compress progress so statements appear closer together
-          const progressPerStatement = 0.15; // Very tight spacing between statements
-
-          statements.forEach((statement, index) => {
-            if (!statement) return;
-
-            // First statement starts fully visible at progress 0, others start very soon after
-            const statementStart = index * progressPerStatement;
-            const fadeInEnd = statementStart + (progressPerStatement * 0.3);
-            const holdEnd = statementStart + (progressPerStatement * 0.7);
-            const statementEnd = (index + 1) * progressPerStatement;
-
-            if (localProgress < statementStart) {
-              gsap.set(statement, { opacity: 0, scale: 0.8, y: 30 });
-            } else if (localProgress >= statementStart && localProgress < fadeInEnd) {
-              // First statement skips fade-in, starts fully visible
-              if (index === 0) {
-                gsap.set(statement, { opacity: 1, scale: 1, y: 0 });
-              } else {
-                const phaseProgress = (localProgress - statementStart) / (fadeInEnd - statementStart);
-                gsap.set(statement, {
-                  opacity: phaseProgress,
-                  scale: 0.8 + (phaseProgress * 0.2),
-                  y: 30 - (phaseProgress * 30)
-                });
-              }
-            } else if (localProgress >= fadeInEnd && localProgress < holdEnd) {
-              gsap.set(statement, { opacity: 1, scale: 1, y: 0 });
-            } else if (localProgress >= holdEnd && localProgress < statementEnd) {
-              const phaseProgress = (localProgress - holdEnd) / (statementEnd - holdEnd);
-              gsap.set(statement, {
-                opacity: 1 - phaseProgress,
-                scale: 1 + (phaseProgress * 0.1),
-                y: -(phaseProgress * 20)
-              });
-            } else {
-              gsap.set(statement, { opacity: 0, scale: 1.1, y: -20 });
-            }
-          });
-        } else if (parentProgress < visionStart) {
-          // Before Vision section - first statement visible, others hidden
-          statements.forEach((statement, index) => {
-            if (!statement) return;
-            if (index === 0) {
-              gsap.set(statement, { opacity: 1, scale: 1, y: 0 });
-            } else {
-              gsap.set(statement, { opacity: 0, scale: 0.8, y: 30 });
-            }
-          });
+        if (liTop <= winMid && liBot > winMid) {
+          activeIndex = index + 1;
         }
-      };
+      });
 
-      gsap.ticker.add(tickerFunc);
+      setCurrentStep(activeIndex);
 
-      tickerCleanup = () => {
-        gsap.ticker.remove(tickerFunc);
-      };
-    }, 400);
+      // Track scroll direction
+      if (winTop > lastScrollTop) {
+        // Scrolling down
+      } else {
+        // Scrolling up
+      }
+      lastScrollTop = winTop;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial call
 
     return () => {
-      clearTimeout(timer);
-      if (tickerCleanup) {
-        tickerCleanup();
-      }
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
 
   return (
-    <div
-      ref={containerRef}
-      data-progress-start="0"
-      data-progress-end="1"
-      style={{
-        position: 'relative',
-        minWidth: '100vw',
-        width: '100vw',
-        height: '100vh',
-        flexShrink: 0,
-        background: tokens.colors.bg.base,
-      }}
-    >
-      {/* Aurora background */}
-      <div className={styles.container} />
+    <>
+      {/* Fixed Vision Container - only visible when in view */}
+      <div
+        data-section="vision"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: tokens.colors.bg.base,
+          zIndex: 1,
+          opacity: isVisionInView ? 1 : 0,
+          pointerEvents: isVisionInView ? 'auto' : 'none',
+          transition: 'opacity 0.3s ease',
+        }}
+      >
+        {/* Aurora background - static */}
+        <div className={styles.container} />
 
-      {/* Single "Our Vision" header - absolute position within Vision section */}
-      <div style={{
-        position: 'absolute',
-        top: `${tokens.spacing['3xl']}px`,
-        left: `${tokens.spacing['3xl']}px`,
-        fontSize: tokens.typography.size.body,
-        color: tokens.colors.on.bgSecondary,
-        letterSpacing: tokens.typography.letterSpacing.wide,
-        textTransform: 'uppercase',
-        fontWeight: tokens.typography.weight.regular,
-        zIndex: 10,
-      }}>
-        Our Vision
+        {/* Single "Our Vision" header */}
+        <div style={{
+          position: 'absolute',
+          top: `${tokens.spacing['3xl']}px`,
+          left: `${tokens.spacing['3xl']}px`,
+          fontSize: tokens.typography.size.body,
+          color: tokens.colors.on.bgSecondary,
+          letterSpacing: tokens.typography.letterSpacing.wide,
+          textTransform: 'uppercase',
+          fontWeight: tokens.typography.weight.regular,
+          zIndex: 10,
+        }}>
+          Our Vision
+        </div>
+
+        {/* Statement panels - stacked */}
+        {visionStatements.map((statement, index) => {
+          const step = index + 1;
+          const isActive = currentStep === step;
+          const isPast = currentStep > step;
+
+          return (
+            <div
+              key={index}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                pointerEvents: 'none',
+                opacity: isActive ? 1 : 0,
+                transition: 'opacity 1s ease',
+              }}
+            >
+              <div
+                style={{
+                  width: '100%',
+                  maxWidth: '1000px',
+                  padding: `${tokens.spacing['3xl']}px`,
+                  fontSize: 'clamp(48px, 5vw, 64px)',
+                  fontWeight: tokens.typography.weight.heavy,
+                  color: tokens.colors.on.bg,
+                  lineHeight: '1.2',
+                  letterSpacing: '-0.5px',
+                  textAlign: 'center',
+                  textTransform: 'uppercase',
+                  transform: isActive ? 'scale(1)' : isPast ? 'scale(0.5)' : 'scale(2)',
+                  transition: 'transform 1s ease',
+                }}
+              >
+                {statement}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Stacked panels (not scrolling, driven by parent GSAP timeline) */}
-      {visionStatements.map((statement, index) => (
-        <div
-          key={index}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            pointerEvents: 'none',
-          }}
-        >
+      {/* Scroll triggers - invisible divs that control the state */}
+      <div
+        ref={scrollWrapRef}
+        style={{
+          position: 'relative',
+          zIndex: 0,
+        }}
+      >
+        {visionStatements.map((_, index) => (
           <div
-            ref={el => statementRefs.current[index] = el}
+            key={index}
+            className="scroll-trigger"
             style={{
-              width: '100%',
-              maxWidth: '1000px',
-              padding: `${tokens.spacing['3xl']}px`,
-              fontSize: 'clamp(48px, 5vw, 64px)',
-              fontWeight: tokens.typography.weight.heavy,
-              color: tokens.colors.on.bg,
-              lineHeight: '1.2',
-              letterSpacing: '-0.5px',
-              textAlign: 'center',
-              textTransform: 'uppercase',
+              height: '100vh',
             }}
-          >
-            {statement}
-          </div>
-        </div>
-      ))}
-    </div>
+          />
+        ))}
+      </div>
+    </>
   );
 }

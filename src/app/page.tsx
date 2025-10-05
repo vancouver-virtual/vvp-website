@@ -16,7 +16,6 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Home() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [containerWidth, setContainerWidth] = useState('200vw');
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<HTMLDivElement>(null);
 
@@ -32,170 +31,91 @@ export default function Home() {
 
     if (!sections || !container) return;
 
-    // Kill any existing ScrollTriggers to prevent conflicts when returning from other pages
+    // Kill existing ScrollTriggers
     ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
-    // Reset transform on sections
+    // Reset transform
     gsap.set(sections, { x: 0 });
 
-    // Landing section takes up 100vw
-    const landingSectionWidth = window.innerWidth;
+    const landingWidth = window.innerWidth;
 
-    // Services section calculations
-    const sectionPadding = 48; // tokens.spacing['3xl'] = 48px (both sides)
-    const leftContentWidth = 400;
-    const gapBetweenContentAndGrid = 48; // tokens.spacing['3xl']
+    // Calculate services card scroll distance
     const cardWidth = 330;
-    const cardGap = 24; // tokens.spacing['2xl'] = 24px
-    const cardsPerRow = 4;
-    const bottomRowOffset = 50; // offset for bottom row cards
-    const gridPaddingRight = 48; // padding at the end of grid
+    const gap = 32; // tokens.spacing['2xl']
+    const totalCards = 8; // services.length
+    const cardsPerRow = Math.ceil(totalCards / 2);
+    const totalWidth = (cardWidth * cardsPerRow) + (gap * (cardsPerRow - 1));
+    const viewportWidth = window.innerWidth - 400 - (48 * 3); // Subtract left content and padding
+    const cardsScrollDistance = Math.max(0, totalWidth - viewportWidth);
 
-    // Calculate total width of service cards grid
-    const totalCardsWidth = (cardWidth * cardsPerRow) + (cardGap * (cardsPerRow - 1)) + bottomRowOffset;
-
-    // Calculate how much of services section needs to be visible beyond the viewport
-    const servicesContentWidth = sectionPadding + leftContentWidth + gapBetweenContentAndGrid + totalCardsWidth + gridPaddingRight + sectionPadding;
-
-    // Vision section width - just 100vw (statements appear in place)
-    const visionSectionWidth = window.innerWidth;
-
-    // Contact section width - just 100vw (centered form)
-    const contactSectionWidth = window.innerWidth;
-
-    // Container needs to hold all four sections side by side
-    // Landing (100vw) + Services (servicesContentWidth) + Vision (100vw) + Contact (100vw)
-    const totalContainerWidth = landingSectionWidth + servicesContentWidth + visionSectionWidth + contactSectionWidth;
-    const widthInVw = (totalContainerWidth / window.innerWidth) * 100;
-    setContainerWidth(`${widthInVw}vw`);
+    // Horizontal scroll distance (Landing to Services + cards scroll + hold)
+    const horizontalScrollHeight = landingWidth + (cardsScrollDistance * 2) + (window.innerHeight * 0.5);
 
     let currentSection = '';
 
-    // Calculate horizontal scroll distance (how far we need to translate to show Contact)
-    // We need to move past Landing (100vw), Services (servicesContentWidth), and Vision (100vw)
-    const horizontalScrollDistance = landingSectionWidth + servicesContentWidth + visionSectionWidth;
+    // Get the cards container
+    const cardsContainer = sections?.querySelector('[data-cards-container]') as HTMLElement;
 
-    // Calculate thresholds for URL hash updates
-    const landingEnd = landingSectionWidth;
+    // Create timeline for horizontal scroll (Landing -> Services only)
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container,
+        start: 'top top',
+        end: `+=${horizontalScrollHeight}`,
+        pin: true,
+        pinSpacing: true,
+        scrub: 1,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const progress = self.progress;
+          const landingThreshold = landingWidth / horizontalScrollHeight;
+          let newSection = progress < landingThreshold ? '' : 'services';
 
-    // Small delay to ensure DOM is ready and previous ScrollTriggers are fully cleaned up
-    const timer = setTimeout(() => {
-      // Create horizontal scroll animation with three stages:
-      // Stage 1: Move through Landing + Services (translateX)
-      // Stage 2: HOLD during Vision animations (no horizontal movement)
-      // Stage 3: Move to Contact (translateX)
+          // Update URL
+          if (newSection !== currentSection) {
+            currentSection = newSection;
+            const newUrl = newSection ? `/#${newSection}` : '/';
+            window.history.replaceState(null, '', newUrl);
+          }
 
-      const visionHoldScrollDistance = window.innerHeight * 1.5; // Scroll distance for Vision hold
+          // Update section states
+          const landingSection = sections?.querySelector('[data-section="landing"]');
+          const servicesSection = sections?.querySelector('[data-section="services"]');
 
-      // Calculate pixel positions for each stage
-      const stage1End = landingSectionWidth + servicesContentWidth; // End of Services
-      const stage2End = stage1End; // Vision holds (same x position)
-      const stage3End = stage1End + visionSectionWidth; // End at Contact
-
-      // Total scroll distance
-      const totalScrollDistance = stage1End + visionHoldScrollDistance + contactSectionWidth;
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: container,
-          start: 'top top',
-          end: () => `+=${totalScrollDistance}`,
-          scrub: 1,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          snap: {
-            snapTo: (progress) => {
-              // Calculate snap points
-              const landingSnap = landingEnd / totalScrollDistance;
-              const servicesSnap = stage1End / totalScrollDistance;
-              const visionStart = stage1End / totalScrollDistance;
-              const visionThird1 = (stage1End + (visionHoldScrollDistance * 0.33)) / totalScrollDistance;
-              const visionThird2 = (stage1End + (visionHoldScrollDistance * 0.66)) / totalScrollDistance;
-              const visionEnd = (stage1End + visionHoldScrollDistance) / totalScrollDistance;
-              const contactSnap = 1.0;
-
-              const snapPoints = [0, landingSnap, servicesSnap, visionThird1, visionThird2, visionEnd, contactSnap];
-
-              // Find closest snap point
-              let closest = snapPoints[0];
-              let minDiff = Math.abs(progress - closest);
-
-              for (const point of snapPoints) {
-                const diff = Math.abs(progress - point);
-                if (diff < minDiff) {
-                  minDiff = diff;
-                  closest = point;
-                }
-              }
-
-              return closest;
-            },
-            duration: 0.5,
-            ease: 'power2.inOut',
-          },
-          onUpdate: (self) => {
-            // Update URL hash based on scroll progress
-            const progress = self.progress;
-            let newSection = '';
-
-            // Calculate thresholds
-            const landingThreshold = landingEnd / totalScrollDistance;
-            const servicesThreshold = stage1End / totalScrollDistance;
-            const visionThreshold = (stage1End + visionHoldScrollDistance) / totalScrollDistance;
-
-            if (progress < landingThreshold) {
-              newSection = '';
-            } else if (progress < servicesThreshold) {
-              newSection = 'services';
-            } else if (progress < visionThreshold) {
-              newSection = 'vision';
-            } else {
-              newSection = 'contact';
-            }
-
-            // Only update if section changed
-            if (newSection !== currentSection) {
-              currentSection = newSection;
-              const newUrl = newSection ? `/#${newSection}` : '/';
-              window.history.replaceState(null, '', newUrl);
-            }
-          },
+          if (landingSection) {
+            landingSection.classList.toggle('is-active', progress < landingThreshold);
+          }
+          if (servicesSection) {
+            servicesSection.classList.toggle('is-active', progress >= landingThreshold);
+          }
         },
-      });
+      },
+    });
 
-      // Stage 1: Move through Landing + Services
-      tl.to(sections, {
-        x: -stage1End,
+    // Horizontal scroll: Landing to Services
+    tl.to(sections, {
+      x: -landingWidth,
+      ease: 'none',
+    }, 0);
+
+    // Scroll the service cards horizontally (starts AFTER landing scroll completes)
+    if (cardsContainer && cardsScrollDistance > 0) {
+      tl.to(cardsContainer, {
+        x: -cardsScrollDistance,
         ease: 'none',
-      }, 0);
+      }, `>`);
+    }
 
-      // Stage 2: HOLD during Vision (no movement, just scroll time)
-      const visionStartProgress = stage1End / totalScrollDistance;
-      const visionEndProgress = (stage1End + visionHoldScrollDistance) / totalScrollDistance;
-
-      tl.to(sections, {
-        x: -stage2End, // Same position (HOLD)
-        ease: 'none',
-      }, visionEndProgress);
-
-      // Stage 3: Move to Contact
-      tl.to(sections, {
-        x: -stage3End,
-        ease: 'none',
-      }, 1);
-
-      // Update Vision section's data attributes with exact progress window
-      const visionElement = sections.querySelector('[data-progress-start]') as HTMLElement;
-      if (visionElement) {
-        visionElement.dataset.progressStart = visionStartProgress.toString();
-        visionElement.dataset.progressEnd = visionEndProgress.toString();
-      }
-    }, 100);
+    // Hold position at the end
+    tl.to(sections, {
+      x: -landingWidth,
+      ease: 'none',
+    }, `>`);
 
     return () => {
-      clearTimeout(timer);
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      tl.kill();
+      ScrollTrigger.getAll().forEach(t => t.kill());
     };
   }, []);
 
@@ -525,18 +445,18 @@ export default function Home() {
           ref={sectionsRef}
           style={{
             display: 'flex',
-            width: containerWidth,
             height: '100vh',
             willChange: 'transform',
           }}
         >
           <LandingSection />
           <ServicesSection />
-          <VisionSection />
-          <ContactSection />
         </div>
       </div>
 
+      {/* Vision and Contact sections - normal vertical scroll */}
+      <VisionSection />
+      <ContactSection />
     </>
   );
 }

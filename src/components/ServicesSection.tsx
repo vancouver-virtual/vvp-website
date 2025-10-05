@@ -79,18 +79,20 @@ export default function ServicesSection() {
   };
 
   return (
-    <div style={{
-      position: 'relative',
-      minWidth: '100vw',
-      height: '100vh',
-      flexShrink: 0,
-      scrollSnapAlign: 'start',
-      background: tokens.colors.bg.base,
-      padding: `${tokens.spacing['3xl']}px`,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: `${tokens.spacing['2xl']}px`,
-    }}>
+    <div
+      data-section="services"
+      style={{
+        position: 'relative',
+        minWidth: '100vw',
+        width: '100vw',
+        height: '100vh',
+        flexShrink: 0,
+        background: tokens.colors.bg.base,
+        padding: `${tokens.spacing['3xl']}px`,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: `${tokens.spacing['2xl']}px`,
+      }}>
       {/* Pre-header */}
       <div style={{
         fontSize: tokens.typography.size.body,
@@ -141,17 +143,20 @@ export default function ServicesSection() {
         <div style={{
           flex: 1,
           position: 'relative',
-          overflow: 'visible',
+          overflow: 'hidden',
         }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateRows: 'repeat(2, 230px)',
-            gridAutoFlow: 'column',
-            gridAutoColumns: '330px',
-            gap: `${tokens.spacing['2xl']}px`,
-            alignContent: 'center',
-            paddingRight: `${tokens.spacing['3xl']}px`,
-          }}>
+          <div
+            data-cards-container
+            style={{
+              display: 'grid',
+              gridTemplateRows: 'repeat(2, 230px)',
+              gridAutoFlow: 'column',
+              gridAutoColumns: '330px',
+              gap: `${tokens.spacing['2xl']}px`,
+              alignContent: 'center',
+              paddingRight: `${tokens.spacing['3xl']}px`,
+              willChange: 'transform',
+            }}>
             {services.map((service, index) => {
               const row = index % 2;
               const isBottomRow = row === 1;
