@@ -70,7 +70,7 @@ export default function Home() {
         onUpdate: (self) => {
           const progress = self.progress;
           const landingThreshold = landingWidth / horizontalScrollHeight;
-          let newSection = progress < landingThreshold ? '' : 'services';
+          const newSection = progress < landingThreshold ? '' : 'services';
 
           // Update URL
           if (newSection !== currentSection) {

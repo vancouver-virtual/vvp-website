@@ -114,8 +114,8 @@ async function captureScrollMechanics(page: Page): Promise<ScrollMechanics> {
     const pages = Array.from(document.querySelectorAll('section, [class*="page"], [class*="slide"]'));
 
     return {
-      scrollDirection: computed.overflowX !== 'visible' ?
-        (computed.overflowY !== 'visible' ? 'both' : 'horizontal') : 'vertical',
+      scrollDirection: (computed.overflowX !== 'visible' ?
+        (computed.overflowY !== 'visible' ? 'both' : 'horizontal') : 'vertical') as 'horizontal' | 'vertical' | 'both',
       scrollSnapType: computed.scrollSnapType || null,
       scrollBehavior: computed.scrollBehavior,
       overflowX: computed.overflowX,
@@ -255,8 +255,8 @@ async function captureTeamPageLayout(page: Page): Promise<TeamPageLayout | null>
 
     return {
       containerSelector: container.className || container.tagName.toLowerCase(),
-      layoutType: containerStyle.display === 'grid' ? 'grid' :
-                  containerStyle.display === 'flex' ? 'flex' : 'custom',
+      layoutType: (containerStyle.display === 'grid' ? 'grid' :
+                  containerStyle.display === 'flex' ? 'flex' : 'custom') as 'grid' | 'flex' | 'custom',
       columns: containerStyle.gridTemplateColumns?.split(' ').length ||
                (containerStyle.display === 'flex' ? Math.ceil(Math.sqrt(items.length)) : 1),
       gap: containerStyle.gap || containerStyle.columnGap,

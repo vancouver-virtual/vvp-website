@@ -204,7 +204,7 @@ export default function ServiceDetail({ service }: ServiceDetailProps) {
             maxWidth: '600px',
             margin: `0 auto ${tokens.spacing.xl}px`,
           }}>
-            Let's discuss how our {service.title.toLowerCase()} services can bring your vision to life.
+            Let&apos;s discuss how our {service.title.toLowerCase()} services can bring your vision to life.
           </p>
           <button
             style={{

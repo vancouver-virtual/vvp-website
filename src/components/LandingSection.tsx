@@ -8,6 +8,7 @@ export default function LandingSection() {
   const handlePlayWithSound = () => {
     setIsFullscreen(true);
     if (videoRef.current) {
+      videoRef.current.muted = false;
       videoRef.current.currentTime = 0;
       videoRef.current.play();
     }
@@ -50,7 +51,7 @@ export default function LandingSection() {
               zIndex: tokens.z.videoBg,
             }}
           >
-            <source src="/videos/TL_Square_Splash_Video.webm" type="video/webm" />
+            <source src="/videos/TL_16x9_Splash_Video.mov" type="video/mp4" />
           </video>
 
           {/* Play with Sound Button */}
@@ -68,7 +69,7 @@ export default function LandingSection() {
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              fontSize: tokens.typography.size.sm,
+              fontSize: tokens.typography.size.small,
               fontWeight: tokens.typography.weight.heavy,
               letterSpacing: tokens.typography.letterSpacing.nav,
               textTransform: 'uppercase',
@@ -129,7 +130,7 @@ export default function LandingSection() {
               objectFit: 'cover',
             }}
           >
-            <source src="/videos/TL_Square_Splash_Video_Ultra_Compressed.mkv" type="video/x-matroska" />
+            <source src="/videos/TL_16x9_Splash_Video.mov" type="video/mp4" />
           </video>
 
           {/* Close Button */}

@@ -1,0 +1,16 @@
+{
+  "projects": {
+    "default": "illumi-cf1b9"
+  },
+  "targets": {
+    "illumi-cf1b9": {
+      "hosting": {
+        "vancouver-virtual": [
+          "vancouver-virtual"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
+

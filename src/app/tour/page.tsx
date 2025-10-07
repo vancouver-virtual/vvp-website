@@ -58,7 +58,7 @@ export default function TourPage() {
             lineHeight: '1.4',
             margin: 0,
           }}>
-            We're building something great for you to see. Check back later.
+            We&apos;re building something great for you to see. Check back later.
           </p>
         </div>
       </div>
